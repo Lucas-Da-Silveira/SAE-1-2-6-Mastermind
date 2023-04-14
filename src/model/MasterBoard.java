@@ -8,4 +8,8 @@ public class MasterBoard extends GridElement {
     public MasterBoard(int x, int y, int nbRows, int nbCols, GameStageModel gameStageModel) {
         super("masterboard", x, y, nbRows, nbCols, gameStageModel);
     }
+    
+    public MasterBoard(int x, int y, GameStageModel gameStageModel) {
+        super("masterboard", x, y, 12, 4, gameStageModel);
+    }
 }
