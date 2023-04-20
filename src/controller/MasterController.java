@@ -2,13 +2,20 @@ package controller;
 
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
+import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
+import boardifier.model.action.ActionList;
+import boardifier.model.action.GameAction;
+import boardifier.model.action.MoveAction;
 import boardifier.view.View;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import model.MasterStageModel;
+import model.Pawn;
 
 public class MasterController extends Controller {
     BufferedReader consoleIn;
@@ -62,6 +69,27 @@ public class MasterController extends Controller {
     }
 
     public boolean analyseAndPlay(String line) {
-        // jouer l'input de l'utilisateur
+        MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
+        for (int i = 0; i < line.length(); i++) {
+            char l = line.charAt(i);
+            if (Pawn.inputColor.get(l) == null) return false;
+        }
+        if (gameStage.getRowsCompleted() >= gameStage.getBoard().getNbRows()) return false;
+
+        ActionList actions = new ActionList(true);
+        for (int i = 0; i < line.length(); i++) {
+            Pawn.Color color = Pawn.inputColor.get(line.charAt(i));
+            int row = gameStage.getRowsCompleted();
+            int col = i;
+            GameAction move = new MoveAction(model, new Pawn(color, row, col, gameStage), "masterboard", row, col);
+            actions.addSingleAction(move);
+        }
+
+        ActionPlayer play = new ActionPlayer(model, this, actions);
+        play.start();
+
+        gameStage.incrementRowsCompleted();
+
+        return true;
     }
 }
