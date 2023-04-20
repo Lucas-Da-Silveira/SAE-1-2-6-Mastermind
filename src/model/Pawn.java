@@ -4,12 +4,24 @@ import boardifier.model.ElementTypes;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Pawn extends GameElement {
-    enum Color {
+    public enum Color {
         // pawn in the main board
         YELLOW, BLUE, GREEN, PURPLE,
         // pawn in the check board
         RED, WHITE
+    }
+
+    public static final Map<Character, Pawn.Color> inputColor;
+    static {
+        inputColor = new HashMap<>();
+        inputColor.put('Y', Color.YELLOW);
+        inputColor.put('B', Color.BLUE);
+        inputColor.put('G', Color.GREEN);
+        inputColor.put('P', Color.PURPLE);
     }
 
     private Color color;
