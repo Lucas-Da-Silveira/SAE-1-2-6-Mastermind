@@ -48,6 +48,10 @@ public class MasterStageModel extends GameStageModel {
         return this.rowsCompleted;
     }
 
+    public void incrementRowsCompleted() {
+        this.rowsCompleted++;
+    }
+
     public ArrayList<Pawn> getPawns() {
         return this.pawns;
     }
