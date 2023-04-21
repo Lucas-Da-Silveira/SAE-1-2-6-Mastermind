@@ -54,8 +54,8 @@ public class MasterMind {
         }
 
         StageFactory.registerModelAndView("master", "model.MasterStageModel", "view.MasterStageView");
-        View holeView = new View(model);
-        MasterController control = new MasterController(model, holeView);
+        View masterView = new View(model);
+        MasterController control = new MasterController(model, masterView);
         control.setFirstStageName("master");
         try {
             control.startGame();

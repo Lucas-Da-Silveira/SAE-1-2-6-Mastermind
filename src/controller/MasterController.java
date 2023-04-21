@@ -2,7 +2,6 @@ package controller;
 
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
-import boardifier.model.GameElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
@@ -57,8 +56,8 @@ public class MasterController extends Controller {
                 System.out.print(p.getName()+ " > ");
                 try {
                     String line = consoleIn.readLine();
-                    if (line.length() == 4) {
-                        ok = analyseAndPlay(line);
+                    if (line.length() == ((MasterStageModel)(model.getGameStage())).getBoard().getNbCols()) {
+                        ok = analyseAndPlay(line.toUpperCase());
                     }
                     if (!ok) {
                         System.out.println("incorrect instruction. retry !");
@@ -66,6 +65,8 @@ public class MasterController extends Controller {
                 } catch(IOException e) {}
             }
         }
+        MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
+        gameStage.incrementRowsCompleted();
     }
 
     public boolean analyseAndPlay(String line) {
@@ -80,15 +81,12 @@ public class MasterController extends Controller {
         for (int i = 0; i < line.length(); i++) {
             Pawn.Color color = Pawn.inputColor.get(line.charAt(i));
             int row = gameStage.getRowsCompleted();
-            int col = i;
-            GameAction move = new MoveAction(model, new Pawn(color, row, col, gameStage), "masterboard", row, col);
+            GameAction move = new MoveAction(model, new Pawn(color, row, i, gameStage), "masterboard", row, i);
             actions.addSingleAction(move);
         }
 
         ActionPlayer play = new ActionPlayer(model, this, actions);
         play.start();
-
-        gameStage.incrementRowsCompleted();
 
         return true;
     }
