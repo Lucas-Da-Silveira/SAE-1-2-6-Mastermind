@@ -38,7 +38,7 @@ public class MasterDecider extends Decider {
         Object[] colors = Pawn.inputColor.keySet().toArray();
         StringBuilder result = new StringBuilder();
 
-        for (int i = 0; i < (gameStage.getBoard().getNbCols(); i++) {
+        for (int i = 0; i < gameStage.getBoard().getNbCols(); i++) {
             int r = random.nextInt(colors.length);
             result.append(colors[r]);
         }
