@@ -22,8 +22,24 @@ public class MasterStageModel extends GameStageModel {
     }
 
     private void setupCallbacks() {
-        // à compléter
-        // onPutInGrid((element, gridDest, rowDest, colDest) -> { rowsCompleted++; });
+        onPutInGrid((element, gridDest, rowDest, colDest) -> {
+            onPutInGrid( (element, gridDest, rowDest, colDest) -> {
+                if (gridDest != board && gridDest != checkBoard) return;
+                if (((Pawn)element).isInMasterBoard() && gridDest == board) {
+                    pawns.add((Pawn)element);
+                } else {
+                    checkPawns.add((Pawn)element);
+                }
+                this.incrementRowsCompleted();
+                if (rowsCompleted >= 12) {
+                    computePartyResult();
+                }
+            });
+        });
+    }
+
+    private void computePartyResult() {
+        return
     }
 
     public MasterBoard getBoard() {

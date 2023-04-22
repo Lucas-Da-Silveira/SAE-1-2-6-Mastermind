@@ -65,8 +65,6 @@ public class MasterController extends Controller {
                 } catch(IOException e) {}
             }
         }
-        MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
-        gameStage.incrementRowsCompleted();
     }
 
     public boolean analyseAndPlay(String line) {
