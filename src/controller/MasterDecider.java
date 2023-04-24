@@ -27,7 +27,12 @@ public class MasterDecider extends Decider {
         for (int i = 0; i < randomLine.length(); i++) {
             Pawn.Color color = Pawn.inputColor.get(randomLine.charAt(i));
             int row = gameStage.getRowsCompleted();
-            GameAction move = new MoveAction(model, new Pawn(color, row, i, gameStage), "masterboard", row, i);
+
+            Pawn p = new Pawn(color, row, i, gameStage);
+
+            gameStage.getBoard().putElement(p, row, i);
+
+            GameAction move = new MoveAction(model, p, "masterboard", row, i);
             actions.addSingleAction(move);
         }
 
