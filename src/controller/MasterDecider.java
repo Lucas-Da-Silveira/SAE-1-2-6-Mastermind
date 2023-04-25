@@ -23,20 +23,7 @@ public class MasterDecider extends Decider {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
         String randomLine = generateRandomLine(gameStage);
 
-        ActionList actions = new ActionList(true);
-        for (int i = 0; i < randomLine.length(); i++) {
-            Pawn.Color color = Pawn.inputColor.get(randomLine.charAt(i));
-            int row = gameStage.getRowsCompleted();
-
-            Pawn p = new Pawn(color, row, i, gameStage);
-
-            gameStage.getBoard().putElement(p, row, i);
-
-            GameAction move = new MoveAction(model, p, "masterboard", row, i);
-            actions.addSingleAction(move);
-        }
-
-        return actions;
+        return MasterController.createActions(randomLine, gameStage, model);
     }
 
     public static String generateRandomLine(MasterStageModel gameStage) {

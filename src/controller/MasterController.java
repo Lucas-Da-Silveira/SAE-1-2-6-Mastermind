@@ -92,7 +92,17 @@ public class MasterController extends Controller {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
         if (!verifyLine(line, gameStage)) return false;
 
+        ActionList actions = createActions(line, gameStage, model);
+
+        ActionPlayer play = new ActionPlayer(model, this, actions);
+        play.start();
+
+        return true;
+    }
+
+    public static ActionList createActions(String line, MasterStageModel gameStage, Model model) {
         ActionList actions = new ActionList(true);
+
         for (int i = 0; i < line.length(); i++) {
             Pawn.Color color = Pawn.inputColor.get(line.charAt(i));
             int row = gameStage.getRowsCompleted();
@@ -105,10 +115,7 @@ public class MasterController extends Controller {
             actions.addSingleAction(move);
         }
 
-        ActionPlayer play = new ActionPlayer(model, this, actions);
-        play.start();
-
-        return true;
+        return actions;
     }
 
     private boolean verifyLine(String line, MasterStageModel gameStage) {
