@@ -9,12 +9,14 @@ import java.util.ArrayList;
 public class MasterStageModel extends GameStageModel {
     private MasterBoard board;
     private MasterBoard checkBoard;
+    private String secretCombination;
     private int rowsCompleted;
     private ArrayList<Pawn> pawns;
     private ArrayList<Pawn> checkPawns;
 
     public MasterStageModel(String name, Model model) {
         super(name, model);
+        secretCombination = "";
         rowsCompleted = 0;
         pawns = new ArrayList<>();
         checkPawns = new ArrayList<>();
@@ -30,7 +32,7 @@ public class MasterStageModel extends GameStageModel {
                 checkPawns.add((Pawn)element);
             }
             this.incrementRowsCompleted();
-            if (rowsCompleted >= 12) {
+            if (rowsCompleted >= board.getNbCols()) {
                 computePartyResult();
             }
         });
@@ -56,6 +58,14 @@ public class MasterStageModel extends GameStageModel {
     public void setCheckBoard(MasterBoard _checkBoard) {
         this.checkBoard = _checkBoard;
         addGrid(this.checkBoard);
+    }
+
+    public String getSecretCombination() {
+        return secretCombination;
+    }
+
+    public void setSecretCombination(String input) {
+        secretCombination = input;
     }
 
     public int getRowsCompleted() {

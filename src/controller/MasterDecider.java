@@ -39,7 +39,7 @@ public class MasterDecider extends Decider {
         return actions;
     }
 
-    private String generateRandomLine(MasterStageModel gameStage) {
+    public static String generateRandomLine(MasterStageModel gameStage) {
         Object[] colors = Pawn.inputColor.keySet().toArray();
         StringBuilder result = new StringBuilder();
 

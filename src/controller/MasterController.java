@@ -28,6 +28,29 @@ public class MasterController extends Controller {
     @Override
     public void stageLoop() {
         consoleIn = new BufferedReader(new InputStreamReader(System.in));
+
+        MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
+
+        String line = "";
+        if (model.getCurrentPlayer().getType() == Player.COMPUTER) {
+            line = MasterDecider.generateRandomLine(gameStage);
+        } else {
+            boolean ok = false;
+            while (!ok) {
+                try {
+                    System.out.print("Choose the colors : ");
+                    line = consoleIn.readLine().toUpperCase();
+                    ok = verifyLine(line, gameStage);
+                    if (!ok) {
+                        System.out.println("incorrect instruction. retry !");
+                    }
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        gameStage.setSecretCombination(line);
+
         update();
         while (!model.isEndStage()) {
             nextPlayer();
@@ -55,10 +78,8 @@ public class MasterController extends Controller {
             while (!ok) {
                 System.out.print(p.getName()+ " > ");
                 try {
-                    String line = consoleIn.readLine();
-                    if (line.length() == ((MasterStageModel)(model.getGameStage())).getBoard().getNbCols()) {
-                        ok = analyseAndPlay(line.toUpperCase());
-                    }
+                    String line = consoleIn.readLine().toUpperCase();
+                    ok = analyseAndPlay(line);
                     if (!ok) {
                         System.out.println("incorrect instruction. retry !");
                     }
@@ -69,11 +90,7 @@ public class MasterController extends Controller {
 
     public boolean analyseAndPlay(String line) {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
-        for (int i = 0; i < line.length(); i++) {
-            char l = line.charAt(i);
-            if (Pawn.inputColor.get(l) == null) return false;
-        }
-        if (gameStage.getRowsCompleted() >= gameStage.getBoard().getNbRows()) return false;
+        if (!verifyLine(line, gameStage)) return false;
 
         ActionList actions = new ActionList(true);
         for (int i = 0; i < line.length(); i++) {
@@ -90,6 +107,17 @@ public class MasterController extends Controller {
 
         ActionPlayer play = new ActionPlayer(model, this, actions);
         play.start();
+
+        return true;
+    }
+
+    private boolean verifyLine(String line, MasterStageModel gameStage) {
+        if (line.length() != gameStage.getBoard().getNbCols()) return false;
+
+        for (int i = 0; i < line.length(); i++) {
+            char l = line.charAt(i);
+            if (Pawn.inputColor.get(l) == null) return false;
+        }
 
         return true;
     }
