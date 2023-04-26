@@ -18,11 +18,9 @@ import model.Pawn;
 
 public class MasterController extends Controller {
     BufferedReader consoleIn;
-    boolean firstPlayer;
 
     public MasterController(Model model, View view) {
         super(model, view);
-        firstPlayer = true;
     }
 
     @Override
@@ -34,11 +32,12 @@ public class MasterController extends Controller {
         String line = "";
         if (model.getCurrentPlayer().getType() == Player.COMPUTER) {
             line = MasterDecider.generateRandomLine(gameStage);
+            System.out.print(model.getCurrentPlayer().getName() + ", chose the colors");
         } else {
             boolean ok = false;
             while (!ok) {
                 try {
-                    System.out.print("Choose the colors : ");
+                    System.out.print(model.getCurrentPlayer().getName() + ", choose the colors : ");
                     line = consoleIn.readLine().toUpperCase();
                     ok = verifyLine(line, gameStage);
                     if (!ok) {
@@ -51,6 +50,8 @@ public class MasterController extends Controller {
 
         gameStage.setSecretCombination(line);
 
+        model.setNextPlayer();
+
         update();
         while (!model.isEndStage()) {
             nextPlayer();
@@ -61,12 +62,6 @@ public class MasterController extends Controller {
     }
 
     public void nextPlayer() {
-        if (!firstPlayer) {
-            model.setNextPlayer();
-        } else {
-            firstPlayer = false;
-        }
-
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
             System.out.println("COMPUTER PLAYS");
