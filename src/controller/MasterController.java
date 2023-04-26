@@ -29,9 +29,7 @@ public class MasterController extends Controller {
 
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
 
-        new Thread(() -> {
-            gameStage.setupCallbacks(this);
-        }).start();
+        new Thread(() -> gameStage.setupCallbacks(this)).start();
 
         String line = "";
         if (model.getCurrentPlayer().getType() == Player.COMPUTER) {
