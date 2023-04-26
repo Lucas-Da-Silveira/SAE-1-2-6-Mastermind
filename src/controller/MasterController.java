@@ -29,10 +29,14 @@ public class MasterController extends Controller {
 
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
 
+        new Thread(() -> {
+            gameStage.setupCallbacks(this);
+        }).start();
+
         String line = "";
         if (model.getCurrentPlayer().getType() == Player.COMPUTER) {
             line = MasterDecider.generateRandomLine(gameStage);
-            System.out.print(model.getCurrentPlayer().getName() + ", chose the colors");
+            System.out.println(model.getCurrentPlayer().getName() + ", chose the colors");
         } else {
             boolean ok = false;
             while (!ok) {

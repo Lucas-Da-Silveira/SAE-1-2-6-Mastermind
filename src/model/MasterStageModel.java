@@ -1,8 +1,13 @@
 package model;
 
+import boardifier.control.ActionPlayer;
+import boardifier.control.Controller;
 import boardifier.model.GameStageModel;
 import boardifier.model.Model;
 import boardifier.model.StageElementsFactory;
+import boardifier.model.action.ActionList;
+import boardifier.model.action.GameAction;
+import boardifier.model.action.MoveAction;
 
 import java.util.ArrayList;
 
@@ -22,25 +27,66 @@ public class MasterStageModel extends GameStageModel {
         rowsCompleted = 0;
         pawns = new ArrayList<>();
         checkPawns = new ArrayList<>();
-        setupCallbacks();
     }
 
-    private void setupCallbacks() {
-        onPutInGrid( (element, gridDest, rowDest, colDest) -> {
+    public void setupCallbacks(Controller control) {
+        onPutInGrid((element, gridDest, rowDest, colDest) -> {
             if (gridDest != board && gridDest != checkBoard) return;
-            if (((Pawn)element).isInMasterBoard() && gridDest == board) {
-                pawns.add((Pawn)element);
-            } else {
+            if (((Pawn)element).isInCheckBoard() && gridDest == checkBoard) {
                 checkPawns.add((Pawn)element);
+                return;
             }
-            this.incrementRowsCompleted();
-            if (rowsCompleted >= board.getNbCols()) {
-                computePartyResult();
+            pawns.add((Pawn)element);
+            if (pawns.size() % board.getNbCols() == 0) {
+                ActionList actions = new ActionList(true);
+
+                int yPlacement = 0;
+                int nbMatch = 0;
+                StringBuilder secretCombinationTmp = new StringBuilder(secretCombination);
+
+                for (int i = pawns.size() - 4, j = 0; i < pawns.size(); i++, j++) {
+                    int matchingIndex = secretCombinationTmp.indexOf(Character.toString(pawns.get(i).getColor().name().charAt(0)));
+
+                    if (pawns.get(i).getColor().name().charAt(0) == secretCombinationTmp.charAt(j) || matchingIndex != -1) {
+                        int row = getRowsCompleted();
+
+                        Pawn p;
+                        if (pawns.get(i).getColor().name().charAt(0) == secretCombinationTmp.charAt(j)) {
+                            p = new Pawn(Pawn.Color.RED, row, yPlacement, this);
+                            secretCombinationTmp.setCharAt(matchingIndex, ' ');
+                            nbMatch++;
+                        } else {
+                            p = new Pawn(Pawn.Color.WHITE, row, yPlacement, this);
+                            secretCombinationTmp.setCharAt(j, ' ');
+                        }
+
+                        checkBoard.putElement(p, row, yPlacement);
+                        GameAction move = new MoveAction(model, p, "checkboard", row, yPlacement);
+
+                        actions.addSingleAction(move);
+                        yPlacement++;
+                    }
+                }
+
+                if (nbMatch == board.getNbCols()) {
+                    // win
+                    computePartyResult(true);
+                }
+
+                ActionPlayer play = new ActionPlayer(model, control, actions);
+                play.start();
+
+                this.incrementRowsCompleted();
+
+                if (rowsCompleted >= board.getNbRows()) {
+                    // loose
+                    computePartyResult(false);
+                }
             }
         });
     }
 
-    private void computePartyResult() {
+    private void computePartyResult(boolean result) {
         // return
     }
 
