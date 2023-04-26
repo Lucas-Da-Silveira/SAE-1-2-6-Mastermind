@@ -46,8 +46,8 @@ public class MasterMind {
             model.addHumanPlayer("player1");
             model.addHumanPlayer("player2");
         } else if (mode == 1) {
-            model.addHumanPlayer("player");
             model.addComputerPlayer("computer");
+            model.addHumanPlayer("player");
         } else if (mode == 2) {
             model.addComputerPlayer("computer1");
             model.addComputerPlayer("computer2");
