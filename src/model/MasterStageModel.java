@@ -9,10 +9,12 @@ import java.util.ArrayList;
 public class MasterStageModel extends GameStageModel {
     private MasterBoard board;
     private MasterBoard checkBoard;
+    private ColorsBoard colors;
     private String secretCombination;
     private int rowsCompleted;
     private ArrayList<Pawn> pawns;
     private ArrayList<Pawn> checkPawns;
+
 
     public MasterStageModel(String name, Model model) {
         super(name, model);
@@ -58,6 +60,13 @@ public class MasterStageModel extends GameStageModel {
     public void setCheckBoard(MasterBoard _checkBoard) {
         this.checkBoard = _checkBoard;
         addGrid(this.checkBoard);
+    }
+
+    public ColorsBoard getColorsBoard() { return this.colors; }
+
+    public void setColorsBoard(ColorsBoard _colors) {
+        this.colors = _colors;
+        addGrid(this.colors);
     }
 
     public String getSecretCombination() {

@@ -3,6 +3,8 @@ package view;
 import boardifier.model.GameException;
 import boardifier.model.GameStageModel;
 import boardifier.view.GameStageView;
+import boardifier.view.GridLook;
+import model.MasterStageModel;
 
 public class MasterStageView extends GameStageView {
     public MasterStageView(String name, GameStageModel gameStageModel) {
@@ -10,5 +12,12 @@ public class MasterStageView extends GameStageView {
     }
 
     @Override
-    public void createLooks() throws GameException {}
+    public void createLooks() throws GameException {   
+        MasterStageModel model = (MasterStageModel)gameStageModel;
+
+        addLook(new GridLook(2, 1, model.getBoard(), -1, false));
+        addLook(new GridLook(2, 1, model.getCheckBoard(), 1, false));
+        addLook(new GridLook(5, 2, model.getColorsBoard(), 1, false));
+
+    }
 }

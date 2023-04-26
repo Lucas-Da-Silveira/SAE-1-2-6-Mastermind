@@ -15,5 +15,6 @@ public class MasterStageFactory extends StageElementsFactory {
     public void setup() {
         stageModel.setBoard(new MasterBoard(0, 0, 12, 4, stageModel));
         stageModel.setCheckBoard(new MasterBoard(18, 0, 12, 4, stageModel));
+        stageModel.setColorsBoard(new ColorsBoard(0, 14, 1, 4, stageModel));
     }
 }

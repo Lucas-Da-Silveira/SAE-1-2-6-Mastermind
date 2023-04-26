@@ -9,6 +9,6 @@ public class ColorsBoard extends GridElement {
     }
 
     public ColorsBoard(int x, int y, GameStageModel gameStageModel) {
-        super("colorsboard", x, y, 2, 2, gameStageModel);
+        super("colorsboard", x, y, 1, 4, gameStageModel);
     }
 }
