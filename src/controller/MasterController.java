@@ -115,7 +115,7 @@ public class MasterController extends Controller {
         return actions;
     }
 
-    private boolean verifyLine(String line, MasterStageModel gameStage) {
+    public boolean verifyLine(String line, MasterStageModel gameStage) {
         if (line.length() != gameStage.getBoard().getNbCols()) return false;
 
         for (int i = 0; i < line.length(); i++) {
