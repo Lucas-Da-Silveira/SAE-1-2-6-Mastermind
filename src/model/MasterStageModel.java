@@ -87,7 +87,8 @@ public class MasterStageModel extends GameStageModel {
     }
 
     private void computePartyResult(boolean result) {
-        // return
+        model.setIdWinner(result ? 1 : 0);
+        model.stopStage();
     }
 
     public MasterBoard getBoard() {
