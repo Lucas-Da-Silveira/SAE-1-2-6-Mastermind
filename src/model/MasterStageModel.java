@@ -19,6 +19,7 @@ public class MasterStageModel extends GameStageModel {
     private int rowsCompleted;
     private ArrayList<Pawn> pawns;
     private ArrayList<Pawn> checkPawns;
+    private Pawn[] colorPawns;
 
 
     public MasterStageModel(String name, Model model) {
@@ -27,6 +28,7 @@ public class MasterStageModel extends GameStageModel {
         rowsCompleted = 0;
         pawns = new ArrayList<>();
         checkPawns = new ArrayList<>();
+        colorPawns = new Pawn[6];
     }
 
     public void setupCallbacks(Controller control) {
@@ -115,6 +117,8 @@ public class MasterStageModel extends GameStageModel {
         this.colors = _colors;
         addGrid(this.colors);
     }
+
+    public Pawn[] getColorPawns() { return this.colorPawns; }
 
     public String getSecretCombination() {
         return secretCombination;
