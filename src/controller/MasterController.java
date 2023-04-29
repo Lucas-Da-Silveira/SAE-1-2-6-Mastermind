@@ -76,7 +76,7 @@ public class MasterController extends Controller {
                 System.out.print(p.getName()+ " > ");
                 try {
                     String line = consoleIn.readLine().toUpperCase();
-                    ok = analyseAndPlay(line);
+                    ok = analyseAndPlay(line, (MasterStageModel) model.getGameStage(), model);
                     if (!ok) {
                         System.out.println("incorrect instruction. retry !");
                     }
@@ -85,13 +85,12 @@ public class MasterController extends Controller {
         }
     }
 
-    public boolean analyseAndPlay(String line) {
-        MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
+    public boolean analyseAndPlay(String line, MasterStageModel gameStage, Model _model) {
         if (!verifyLine(line, gameStage)) return false;
 
-        ActionList actions = createActions(line, gameStage, model);
+        ActionList actions = createActions(line, gameStage, _model);
 
-        ActionPlayer play = new ActionPlayer(model, this, actions);
+        ActionPlayer play = new ActionPlayer(_model, this, actions);
         play.start();
 
         return true;

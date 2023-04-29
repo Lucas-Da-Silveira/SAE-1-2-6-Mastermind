@@ -88,8 +88,8 @@ public class MasterStageModel extends GameStageModel {
         });
     }
 
-    private void computePartyResult(boolean result) {
-        model.setIdWinner(result ? 1 : 0);
+    private void computePartyResult(boolean win) {
+        model.setIdWinner(win ? 1 : 0);
         model.stopStage();
     }
 
