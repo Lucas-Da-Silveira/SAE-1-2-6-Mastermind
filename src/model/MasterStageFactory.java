@@ -3,7 +3,7 @@ package model;
 import boardifier.model.GameStageModel;
 import boardifier.model.StageElementsFactory;
 
-import java.util.Arrays;
+import java.util.*;
 
 public class MasterStageFactory extends StageElementsFactory {
     private MasterStageModel stageModel;
@@ -17,19 +17,48 @@ public class MasterStageFactory extends StageElementsFactory {
     public void setup() {
         stageModel.setBoard(new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
         stageModel.setCheckBoard(new MasterBoard(18, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
-        ColorsBoard colorsBoard = new ColorsBoard(0, 14, 1, MasterSettings.NB_COLORS, stageModel);
-        stageModel.setColorsBoard(colorsBoard);
+        stageModel.setColorsBoard(new ColorsBoard(0, 14, 1, MasterSettings.NB_COLORS, stageModel));
+        stageModel.setColorPot(new MasterBoard(36, 0, Pawn.Color.values().length, MasterSettings.NB_ROWS*MasterSettings.NB_COLS, stageModel));
+        stageModel.getColorPot().setVisible(false);
 
         final int[] i = {0};
-        Pawn[] colorPawns = new Pawn[7];
+        Map<Character, Pawn> colorPawns = new HashMap<>();
+        Map<Pawn.Color, List<Pawn>> colorPot = new HashMap<>();
         for (Pawn.Color color : Pawn.Color.values()) {
-            colorPawns[i[0]] = new Pawn(color, 0, i[0], stageModel);
+            colorPawns.put(color.name().charAt(0), new Pawn(color, 0, i[0], stageModel));
+            colorPot.put(color, new ArrayList<>());
             i[0]++;
         }
         stageModel.setColorPawns(colorPawns);
-        for (int j = 0; j < stageModel.getColorPawns().length && j < MasterSettings.NB_COLORS; j++) {
-            if (stageModel.getColorPawns()[j].getColor() == Pawn.Color.RED || stageModel.getColorPawns()[j].getColor() == Pawn.Color.WHITE) continue;
-            stageModel.getColorsBoard().putElement(stageModel.getColorPawns()[j], 0, j);
-        }
+
+        i[0] = 0;
+        colorPot.forEach((color, pot) -> {
+            for(int j = 0; j < MasterSettings.NB_ROWS*MasterSettings.NB_COLS; j++) {
+                Pawn p = new Pawn(color, i[0], j, stageModel);
+                p.setVisible(false);
+                pot.add(p);
+            }
+        });
+        stageModel.setColorPotLists(colorPot);
+
+        i[0] = 0;
+        stageModel.getColorPawns().forEach((key, value) -> {
+            if (i[0] < MasterSettings.NB_COLORS && !(((Pawn)value).getColor() == Pawn.Color.RED || ((Pawn)value).getColor() == Pawn.Color.WHITE)){
+                stageModel.getColorsBoard().putElement((Pawn)value, 0, i[0]);
+                i[0]++;
+            }
+        });
+
+        i[0] = 0;
+        final int[] j = {0};
+        stageModel.getColorPotLists().forEach((color, list) -> {
+            list.forEach(p -> {
+                stageModel.getColorPot().putElement(p, i[0], j[0]);
+                j[0]++;
+            });
+            j[0] = 0;
+            i[0]++;
+        });
+
     }
 }

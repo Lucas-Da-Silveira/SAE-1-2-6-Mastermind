@@ -2,6 +2,7 @@ package model;
 
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
+import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.Model;
 import boardifier.model.StageElementsFactory;
@@ -10,16 +11,21 @@ import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MasterStageModel extends GameStageModel {
     private MasterBoard board;
     private MasterBoard checkBoard;
     private ColorsBoard colors;
+    private MasterBoard colorPot;
     private String secretCombination;
     private int rowsCompleted;
     private ArrayList<Pawn> pawns;
     private ArrayList<Pawn> checkPawns;
-    private Pawn[] colorPawns;
+    private Map<Character, Pawn> colorPawns;
+    private Map<Pawn.Color, List<Pawn>> colorPotLists;
     private int AIMode;
 
     public MasterStageModel(String name, Model model) {
@@ -28,7 +34,8 @@ public class MasterStageModel extends GameStageModel {
         rowsCompleted = 0;
         pawns = new ArrayList<>();
         checkPawns = new ArrayList<>();
-        colorPawns = new Pawn[Pawn.Color.values().length];
+        colorPawns = new HashMap<> ();
+        colorPotLists = new HashMap<Pawn.Color, List<Pawn>>();
     }
 
     public void setupCallbacks(Controller control) {
@@ -118,13 +125,29 @@ public class MasterStageModel extends GameStageModel {
         addGrid(this.colors);
     }
 
-    public Pawn[] getColorPawns() { return this.colorPawns; }
+    public MasterBoard getColorPot() { return this.colorPot; }
 
-    public void setColorPawns(Pawn[] colorPawns) {
+    public void setColorPot(MasterBoard _colorPot) {
+        this.colorPot = _colorPot;
+        addGrid(this.colorPot);
+    }
+
+    public Map<Pawn.Color, List<Pawn>> getColorPotLists() { return this.colorPotLists; }
+
+    public void setColorPotLists(Map<Pawn.Color, List<Pawn>> potLists) {
+        this.colorPotLists = potLists;
+        potLists.forEach((color, list) -> {
+            list.forEach(this::addElement);
+        });
+    }
+
+    public Map getColorPawns() { return this.colorPawns; }
+
+    public void setColorPawns(Map colorPawns) {
         this.colorPawns = colorPawns;
-        for (int i = 0; i < colorPawns.length; i++) {
-            addElement(colorPawns[i]);
-        }
+        colorPawns.forEach((key, value) -> {
+            addElement((Pawn)value);
+        });
     }
 
     public String getSecretCombination() {
