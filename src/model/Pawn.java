@@ -10,7 +10,7 @@ import java.util.Map;
 public class Pawn extends GameElement {
     public enum Color {
         // pawn in the main board
-        YELLOW, BLUE, GREEN, PURPLE,
+        YELLOW, BLUE, GREEN, PURPLE, CYAN,
         // pawn in the check board
         RED, WHITE
     }

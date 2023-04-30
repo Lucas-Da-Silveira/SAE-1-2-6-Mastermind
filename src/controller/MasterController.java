@@ -47,9 +47,7 @@ public class MasterController extends Controller {
                     if (!ok) {
                         System.out.println("incorrect instruction. retry !");
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                } catch (IOException ignored) {}
             }
         }
 
@@ -82,9 +80,7 @@ public class MasterController extends Controller {
                     if (!ok) {
                         System.out.println("incorrect instruction. retry !");
                     }
-                } catch(IOException e) {
-                    throw new RuntimeException(e);
-                }
+                } catch (IOException ignored) {}
             }
         }
     }

@@ -10,6 +10,7 @@ public class PawnLook extends ElementLook {
         super(element, 1, 1);
         Pawn pawn = (Pawn)element;
         String backgroundColor;
+
         switch (((Pawn) element).getColor()) {
             case RED:
                 backgroundColor = ConsoleColor.RED_BACKGROUND;
@@ -29,9 +30,13 @@ public class PawnLook extends ElementLook {
             case YELLOW:
                 backgroundColor = ConsoleColor.YELLOW_BACKGROUND;
                 break;
+            case CYAN:
+                backgroundColor = ConsoleColor.CYAN_BACKGROUND;
+                break;
             default:
                 backgroundColor = ConsoleColor.BLACK_BACKGROUND;
         }
+
         shape[0][0] = ConsoleColor.BLACK + backgroundColor + ((Pawn) element).getColor().name().charAt(0) + ConsoleColor.RESET;
     }
 

@@ -4,6 +4,7 @@ import boardifier.view.View;
 import controller.MasterController;
 import boardifier.model.GameException;
 import model.MasterSettings;
+import model.Pawn;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +22,7 @@ public class MasterMind {
         try {
             mode = Integer.parseInt(args[0]);
             if ((mode < 0) || (mode > 2)) mode = 0;
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException ignored) {}
 
         String pattern = "--(colors|rows|cols|aimode)=(\\d+)";
         for (String arg : args) {
@@ -30,7 +31,7 @@ public class MasterMind {
                 if (matcher.find()) {
                     String name = matcher.group(1);
                     int value = Integer.parseInt(matcher.group(2));
-                    if (name.equals("colors") && value >= 1) {
+                    if (name.equals("colors") && (value >= 1) && (value <= (Pawn.Color.values().length - 2))) {
                         MasterSettings.NB_COLORS = value;
                     } else if (name.equals("rows") && value >= 1) {
                         MasterSettings.NB_ROWS = value;
