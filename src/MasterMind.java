@@ -44,6 +44,16 @@ public class MasterMind {
             }
         }
 
+        int counter = 0;
+        for (Pawn.Color c : Pawn.Color.values()) {
+            if (c == Pawn.Color.RED || c == Pawn.Color.WHITE) continue;
+            if (counter >= MasterSettings.AI_MODE) {
+                Pawn.inputColor.remove(c.name().charAt(0), c);
+            }
+
+            counter++;
+        }
+
         Model model = new Model();
         if (mode == 0) {
             model.addHumanPlayer("player1");

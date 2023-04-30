@@ -37,7 +37,7 @@ public class PawnLook extends ElementLook {
                 backgroundColor = ConsoleColor.BLACK_BACKGROUND;
         }
 
-        shape[0][0] = ConsoleColor.BLACK + backgroundColor + ((Pawn) element).getColor().name().charAt(0) + ConsoleColor.RESET;
+        shape[0][0] = ConsoleColor.WHITE + backgroundColor + ((Pawn) element).getColor().name().charAt(0) + ConsoleColor.RESET;
     }
 
     @Override
