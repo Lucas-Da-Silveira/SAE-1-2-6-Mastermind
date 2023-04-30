@@ -25,10 +25,15 @@ public class MasterController extends Controller {
 
     @Override
     public void stageLoop() {
+        this.stageLoop(2);
+    }
+
+    public void stageLoop(int aimode) {
         consoleIn = new BufferedReader(new InputStreamReader(System.in));
 
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
 
+        gameStage.setAIMode(aimode);
         new Thread(() -> gameStage.setupCallbacks(this)).start();
 
         String line = "";
@@ -46,6 +51,7 @@ public class MasterController extends Controller {
                         System.out.println("incorrect instruction. retry !");
                     }
                 } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -56,18 +62,17 @@ public class MasterController extends Controller {
 
         update();
         while (!model.isEndStage()) {
-            nextPlayer();
+            nextPlayer(new MasterDecider(model, this), consoleIn);
             update();
         }
         stopStage();
         endGame();
     }
 
-    public void nextPlayer() {
+    public void nextPlayer(MasterDecider decider, BufferedReader _consoleIn) {
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
             System.out.println("COMPUTER PLAYS");
-            MasterDecider decider = new MasterDecider(model, this);
             ActionPlayer play = new ActionPlayer(model, this, decider, null);
             play.start();
         } else {
@@ -75,12 +80,14 @@ public class MasterController extends Controller {
             while (!ok) {
                 System.out.print(p.getName()+ " > ");
                 try {
-                    String line = consoleIn.readLine().toUpperCase();
+                    String line = _consoleIn.readLine().toUpperCase();
                     ok = analyseAndPlay(line, (MasterStageModel) model.getGameStage(), model);
                     if (!ok) {
                         System.out.println("incorrect instruction. retry !");
                     }
-                } catch(IOException e) {}
+                } catch(IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

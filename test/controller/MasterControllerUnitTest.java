@@ -2,6 +2,7 @@ package controller;
 
 import boardifier.model.GridElement;
 import boardifier.model.Model;
+import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
@@ -14,8 +15,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Mockito.times;
 
 public class MasterControllerUnitTest {
     Model model;
@@ -98,5 +103,39 @@ public class MasterControllerUnitTest {
 
         // false car 'W' not a valid color (only used as check pawn)
         Assertions.assertFalse(controller.analyseAndPlay("GGWG", gameStage, model));
+    }
+
+    @Test
+    public void testNextPlayer() {
+        String input = "YYPG";
+        Model m = Mockito.mock(Model.class);
+
+        Mockito.when(m.getCurrentPlayer()).thenReturn(Player.createComputerPlayer("computer1"));
+        Mockito.when(m.getGameStage()).thenReturn(gameStage);
+        
+        MasterController c = Mockito.spy(new MasterController(m, new View(m)));
+
+        Mockito.when(gameStage.getAIMode()).thenReturn(2);
+        MasterDecider decider = Mockito.spy(new MasterDecider(m, c));
+
+        BufferedReader consoleIn = Mockito.mock(BufferedReader.class);
+        try {
+            Mockito.when(consoleIn.readLine()).thenReturn(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        c.nextPlayer(decider, consoleIn);
+
+        // gameStage.getBoard().getNbCols() is called in generateRandomLine in MasterDecider
+        // when gameStage.getAIMode() != 0 && != 1
+        Mockito.verify(decider, times(1)).elseIAStrategy(gameStage);
+
+        Mockito.when(m.getCurrentPlayer()).thenReturn(Player.createHumanPlayer("player1"));
+
+        c.nextPlayer(decider, consoleIn);
+
+        // if not a computer, then it calls analyseAndPlay with valid human input "YYPG"
+        Mockito.verify(c, times(1)).analyseAndPlay(input, gameStage, m);
     }
 }

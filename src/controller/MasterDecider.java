@@ -4,8 +4,6 @@ import boardifier.control.Controller;
 import boardifier.control.Decider;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
-import boardifier.model.action.GameAction;
-import boardifier.model.action.MoveAction;
 import model.MasterStageModel;
 import model.Pawn;
 
@@ -21,9 +19,19 @@ public class MasterDecider extends Decider {
     @Override
     public ActionList decide() {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
-        String randomLine = generateRandomLine(gameStage);
+        String randomLine = generateLine(gameStage, gameStage.getAIMode());
 
         return MasterController.createActions(randomLine, gameStage, model);
+    }
+
+    public String generateLine(MasterStageModel gameStage, int AIMode) {
+        // if (AIMode == 0) return firstIAStrategy();
+        // if (AIMode == 1) return secondIAStrategy();
+        return elseIAStrategy(gameStage);
+    }
+
+    public String elseIAStrategy(MasterStageModel gameStage) {
+        return generateRandomLine(gameStage);
     }
 
     public static String generateRandomLine(MasterStageModel gameStage) {

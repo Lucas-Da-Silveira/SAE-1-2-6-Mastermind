@@ -11,6 +11,10 @@ public class MasterMind {
     public static void main(String[] args) {
         // ex pour lancer le jeu joueur vs ordinateur, 5 couleurs, 5 rangées :
         // java MasterMind 1 --colors=5 --cols=5
+        // aimode :
+        // 0 = 1st strategy
+        // 1 = 2nd strategy
+        // else = "dumb" strategy (plays random)
         int mode = 0;
 
         try {
@@ -18,11 +22,12 @@ public class MasterMind {
             if ((mode < 0) || (mode > 2)) mode = 0;
         } catch (NumberFormatException e) {}
 
+        int aimode = 2; // default : no strategy, plays random
         /*
         int colors = 4;
         int rows = 12;
         int cols = 4;
-        String pattern = "--(colors|rows|cols)=(\\d+)";
+        String pattern = "--(colors|rows|cols|aimode)=(\\d+)";
         for (String arg : args) {
             if (arg.matches(pattern)) {
                 Matcher matcher = Pattern.compile(pattern).matcher(arg);
@@ -35,6 +40,8 @@ public class MasterMind {
                         rows = value;
                     } else if (name.equals("cols") && value >= 4) {
                         cols = value;
+                    } else if (name.equals("aimode")) {
+                        aimode = value;
                     }
                 }
             }
@@ -59,7 +66,7 @@ public class MasterMind {
         control.setFirstStageName("master");
         try {
             control.startGame();
-            control.stageLoop();
+            control.stageLoop(aimode);
         } catch (GameException e) {
             System.out.println("Cannot start the game. Abort.");
         }

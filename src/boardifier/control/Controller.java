@@ -5,7 +5,9 @@ import boardifier.view.ElementLook;
 import boardifier.view.GameStageView;
 import boardifier.view.GridLook;
 import boardifier.view.View;
+import controller.MasterDecider;
 
+import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,8 +80,10 @@ public abstract class Controller {
      * In board games, it can be overridden in subclasses to compute who is the
      * next player, and then to take actions if needed. For example, a method of the model can be called to update who is the current player.
      * Then, if it is a computer, a Decider object can be used to determine what to play and then to play it.
+     * @param decider
+     * @param _consoleIn
      */
-    public void nextPlayer() {};
+    public void nextPlayer(MasterDecider decider, BufferedReader _consoleIn) {};
 
     /**
      * Execute actions at the end of the game.

@@ -20,7 +20,7 @@ public class MasterStageModel extends GameStageModel {
     private ArrayList<Pawn> pawns;
     private ArrayList<Pawn> checkPawns;
     private Pawn[] colorPawns;
-
+    private int AIMode;
 
     public MasterStageModel(String name, Model model) {
         super(name, model);
@@ -164,6 +164,14 @@ public class MasterStageModel extends GameStageModel {
         for (Pawn cp : _checkPawns) {
             addElement(cp);
         }
+    }
+
+    public int getAIMode() {
+        return this.AIMode;
+    }
+
+    public void setAIMode(int mode) {
+        this.AIMode = mode;
     }
 
     @Override
