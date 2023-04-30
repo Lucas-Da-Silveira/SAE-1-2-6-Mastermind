@@ -120,6 +120,13 @@ public class MasterStageModel extends GameStageModel {
 
     public Pawn[] getColorPawns() { return this.colorPawns; }
 
+    public void setColorPawns(Pawn[] colorPawns) {
+        this.colorPawns = colorPawns;
+        for (int i = 0; i < colorPawns.length; i++) {
+            addElement(colorPawns[i]);
+        }
+    }
+
     public String getSecretCombination() {
         return secretCombination;
     }

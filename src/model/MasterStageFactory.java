@@ -21,12 +21,12 @@ public class MasterStageFactory extends StageElementsFactory {
         stageModel.setColorsBoard(colorsBoard);
 
         final int[] i = {0};
-
+        Pawn[] colorPawns = new Pawn[7];
         for (Pawn.Color color : Pawn.Color.values()) {
-            stageModel.getColorPawns()[i[0]] = new Pawn(color, 0, i[0], stageModel);
+            colorPawns[i[0]] = new Pawn(color, 0, i[0], stageModel);
             i[0]++;
         }
-
+        stageModel.setColorPawns(colorPawns);
         for (int j = 0; j < stageModel.getColorPawns().length && j < MasterSettings.NB_COLORS; j++) {
             if (stageModel.getColorPawns()[j].getColor() == Pawn.Color.RED || stageModel.getColorPawns()[j].getColor() == Pawn.Color.WHITE) continue;
             stageModel.getColorsBoard().putElement(stageModel.getColorPawns()[j], 0, j);
