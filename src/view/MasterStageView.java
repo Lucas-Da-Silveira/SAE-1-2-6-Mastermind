@@ -25,7 +25,8 @@ public class MasterStageView extends GameStageView {
         for(int i = 0; i < model.getColorPawns().length; i++) {
             addLook(new PawnLook(model.getColorPawns()[i]));
         }
-        for(int i = 0; i < MasterSettings.NB_COLORS; i++) {
+
+        for(int i = 0; i < model.getColorPawns().length && i < MasterSettings.NB_COLORS; i++) {
             Pawn.Color color = model.getColorPawns()[i].getColor();
             if (color == Pawn.Color.RED || color == Pawn.Color.WHITE) continue;
             System.out.println(color + " (" + color.name().charAt(0) +")");

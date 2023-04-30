@@ -27,8 +27,7 @@ public class MasterStageFactory extends StageElementsFactory {
             i[0]++;
         }
 
-        for (int j = 0; j < stageModel.getColorPawns().length; j++) {
-            if (j >= MasterSettings.NB_COLORS) break;
+        for (int j = 0; j < stageModel.getColorPawns().length && j < MasterSettings.NB_COLORS; j++) {
             if (stageModel.getColorPawns()[j].getColor() == Pawn.Color.RED || stageModel.getColorPawns()[j].getColor() == Pawn.Color.WHITE) continue;
             stageModel.getColorsBoard().putElement(stageModel.getColorPawns()[j], 0, j);
         }
