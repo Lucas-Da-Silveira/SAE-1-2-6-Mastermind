@@ -3,6 +3,7 @@ import boardifier.model.Model;
 import boardifier.view.View;
 import controller.MasterController;
 import boardifier.model.GameException;
+import model.MasterSettings;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,11 +23,6 @@ public class MasterMind {
             if ((mode < 0) || (mode > 2)) mode = 0;
         } catch (NumberFormatException e) {}
 
-        int aimode = 2; // default : no strategy, plays random
-        /*
-        int colors = 4;
-        int rows = 12;
-        int cols = 4;
         String pattern = "--(colors|rows|cols|aimode)=(\\d+)";
         for (String arg : args) {
             if (arg.matches(pattern)) {
@@ -34,19 +30,18 @@ public class MasterMind {
                 if (matcher.find()) {
                     String name = matcher.group(1);
                     int value = Integer.parseInt(matcher.group(2));
-                    if (name.equals("colors") && value >= 4) {
-                        colors = value;
-                    } else if (name.equals("rows") && value >= 12) {
-                        rows = value;
-                    } else if (name.equals("cols") && value >= 4) {
-                        cols = value;
+                    if (name.equals("colors") && value >= 1) {
+                        MasterSettings.NB_COLORS = value;
+                    } else if (name.equals("rows") && value >= 1) {
+                        MasterSettings.NB_ROWS = value;
+                    } else if (name.equals("cols") && value >= 1) {
+                        MasterSettings.NB_COLS = value;
                     } else if (name.equals("aimode")) {
-                        aimode = value;
+                        MasterSettings.AI_MODE = value;
                     }
                 }
             }
         }
-        */
 
         Model model = new Model();
         if (mode == 0) {
@@ -66,7 +61,7 @@ public class MasterMind {
         control.setFirstStageName("master");
         try {
             control.startGame();
-            control.stageLoop(aimode);
+            control.stageLoop();
         } catch (GameException e) {
             System.out.println("Cannot start the game. Abort.");
         }

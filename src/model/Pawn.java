@@ -18,10 +18,10 @@ public class Pawn extends GameElement {
     public static final Map<Character, Pawn.Color> inputColor;
     static {
         inputColor = new HashMap<>();
-        inputColor.put('Y', Color.YELLOW);
-        inputColor.put('B', Color.BLUE);
-        inputColor.put('G', Color.GREEN);
-        inputColor.put('P', Color.PURPLE);
+        for (Color c : Color.values()) {
+            if (c == Color.RED || c == Color.WHITE) continue;
+            inputColor.put(c.name().charAt(0), c);
+        }
     }
 
     private Color color;

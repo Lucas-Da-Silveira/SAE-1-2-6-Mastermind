@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import model.MasterSettings;
 import model.MasterStageModel;
 import model.Pawn;
 
@@ -25,15 +26,11 @@ public class MasterController extends Controller {
 
     @Override
     public void stageLoop() {
-        this.stageLoop(2);
-    }
-
-    public void stageLoop(int aimode) {
         consoleIn = new BufferedReader(new InputStreamReader(System.in));
 
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
 
-        gameStage.setAIMode(aimode);
+        gameStage.setAIMode(MasterSettings.AI_MODE);
         new Thread(() -> gameStage.setupCallbacks(this)).start();
 
         String line = "";

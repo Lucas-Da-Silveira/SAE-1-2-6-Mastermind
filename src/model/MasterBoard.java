@@ -10,6 +10,6 @@ public class MasterBoard extends GridElement {
     }
     
     public MasterBoard(int x, int y, GameStageModel gameStageModel) {
-        super("masterboard", x, y, 12, 4, gameStageModel);
+        super("masterboard", x, y, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStageModel);
     }
 }

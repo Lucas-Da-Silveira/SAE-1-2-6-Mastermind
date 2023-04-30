@@ -28,7 +28,7 @@ public class MasterStageModel extends GameStageModel {
         rowsCompleted = 0;
         pawns = new ArrayList<>();
         checkPawns = new ArrayList<>();
-        colorPawns = new Pawn[6];
+        colorPawns = new Pawn[Pawn.Color.values().length];
     }
 
     public void setupCallbacks(Controller control) {
@@ -46,7 +46,7 @@ public class MasterStageModel extends GameStageModel {
                 int nbMatch = 0;
                 StringBuilder secretCombinationTmp = new StringBuilder(secretCombination);
 
-                for (int i = pawns.size() - 4, j = 0; i < pawns.size(); i++, j++) {
+                for (int i = pawns.size() - board.getNbCols(), j = 0; i < pawns.size(); i++, j++) {
                     int matchingIndex = secretCombinationTmp.indexOf(Character.toString(pawns.get(i).getColor().name().charAt(0)));
 
                     if (pawns.get(i).getColor().name().charAt(0) == secretCombinationTmp.charAt(j) || matchingIndex != -1) {

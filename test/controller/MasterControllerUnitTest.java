@@ -8,6 +8,7 @@ import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
 import boardifier.view.View;
 import model.MasterBoard;
+import model.MasterSettings;
 import model.MasterStageModel;
 import model.Pawn;
 import org.junit.jupiter.api.Assertions;
@@ -35,18 +36,18 @@ public class MasterControllerUnitTest {
 
         // used Mockito's spy method so that other functions in the class are initialized
         gameStage = Mockito.spy(new MasterStageModel("model.MasterStageModel", model));
-        board = Mockito.spy(new MasterBoard(0, 0, 12, 4, gameStage));
+        board = Mockito.spy(new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage));
         Mockito.when(gameStage.getBoard()).thenReturn(board);
     }
 
     @Test
     public void testVerifyLine() {
-        Mockito.when(board.getNbCols()).thenReturn(4);
+        // Mockito.when(board.getNbCols()).thenReturn(MasterSettings.NB_COLS);
 
         // valid input
         Assertions.assertTrue(controller.verifyLine("BYGP", gameStage));
 
-        // invalid input (line.length() != 4)
+        // invalid input (line.length() != board.getNbCols())
         Assertions.assertFalse(controller.verifyLine("BYGPP", gameStage));
 
         // invalid input ('W' is not a color)
@@ -94,11 +95,11 @@ public class MasterControllerUnitTest {
         Assertions.assertTrue(controller.analyseAndPlay("GGGG", gameStage, model));
 
         // check that pawns put are all green
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < board.getNbCols(); i++) {
             Assertions.assertEquals(((Pawn) board.getElement(gameStage.getRowsCompleted(), i)).getColor(), Pawn.Color.GREEN);
         }
 
-        // false car input length > 4
+        // false car input length > board.getNbCols()
         Assertions.assertFalse(controller.analyseAndPlay("GGGGG", gameStage, model));
 
         // false car 'W' not a valid color (only used as check pawn)
