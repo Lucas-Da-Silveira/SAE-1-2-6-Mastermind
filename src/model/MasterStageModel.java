@@ -109,6 +109,7 @@ public class MasterStageModel extends GameStageModel {
         for (int i = 0; i < code.length(); i++) {
             if (code.charAt(i) == answer.charAt(i) && code.charAt(i) != 'X' && answer.charAt(i) != 'X') {
                 code.replace(i, i+1, "X");
+                answer.replace(i, i+1, "X");
                 result++;
             }
         }
