@@ -31,8 +31,8 @@ public class MasterMind {
                 if (matcher.find()) {
                     String name = matcher.group(1);
                     int value = Integer.parseInt(matcher.group(2));
-                    if (name.equals("colors") && (value >= 1) && (value <= (Pawn.Color.values().length - 2))) {
-                        MasterSettings.NB_COLORS = value;
+                    if (name.equals("colors") && value >= 1) {
+                        MasterSettings.NB_COLORS = Math.min(value, (Pawn.Color.values().length - 2));
                     } else if (name.equals("rows") && value >= 1) {
                         MasterSettings.NB_ROWS = value;
                     } else if (name.equals("cols") && value >= 1) {
