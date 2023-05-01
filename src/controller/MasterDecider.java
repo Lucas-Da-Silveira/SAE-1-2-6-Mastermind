@@ -4,9 +4,11 @@ import boardifier.control.Controller;
 import boardifier.control.Decider;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
+import model.MasterSettings;
 import model.MasterStageModel;
 import model.Pawn;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class MasterDecider extends Decider {
@@ -19,7 +21,7 @@ public class MasterDecider extends Decider {
     @Override
     public ActionList decide() {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
-        String randomLine = generateLine(gameStage, gameStage.getAIMode());
+        String randomLine = generateLine(gameStage, MasterSettings.AI_MODE);
 
         return MasterController.createActions(randomLine, gameStage, model);
     }
@@ -37,6 +39,7 @@ public class MasterDecider extends Decider {
     public static String generateRandomLine(MasterStageModel gameStage) {
         Object[] colors = Pawn.inputColor.keySet().toArray();
         StringBuilder result = new StringBuilder();
+        System.out.println(Arrays.toString(colors));
 
         for (int i = 0; i < gameStage.getBoard().getNbCols(); i++) {
             int r = random.nextInt(colors.length);

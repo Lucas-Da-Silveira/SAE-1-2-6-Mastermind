@@ -30,7 +30,6 @@ public class MasterController extends Controller {
 
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
 
-        gameStage.setAIMode(MasterSettings.AI_MODE);
         new Thread(() -> gameStage.setupCallbacks(this)).start();
 
         String line = "";

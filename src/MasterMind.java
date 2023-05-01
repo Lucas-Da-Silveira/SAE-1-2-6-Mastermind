@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 
 public class MasterMind {
     public static void main(String[] args) {
-        // ex pour lancer le jeu joueur vs ordinateur, 5 couleurs, 5 rangées :
-        // java MasterMind 1 --colors=5 --cols=5
+        // ex pour lancer le jeu joueur vs ordinateur, 5 couleurs, 5 rangées, premiere ia :
+        // java MasterMind 1 --colors=5 --cols=5 --aimode=0
         // aimode :
         // 0 = 1st strategy
         // 1 = 2nd strategy
@@ -44,15 +44,7 @@ public class MasterMind {
             }
         }
 
-        int counter = 0;
-        for (Pawn.Color c : Pawn.Color.values()) {
-            if (c == Pawn.Color.RED || c == Pawn.Color.WHITE) continue;
-            if (counter >= MasterSettings.NB_COLORS) {
-                Pawn.inputColor.remove(c.name().charAt(0), c);
-            }
-
-            counter++;
-        }
+        Pawn.adjustPawnColors();
 
         Model model = new Model();
         if (mode == 0) {

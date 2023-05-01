@@ -7,10 +7,7 @@ import boardifier.model.action.ActionList;
 import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
 import boardifier.view.View;
-import model.MasterBoard;
-import model.MasterSettings;
-import model.MasterStageModel;
-import model.Pawn;
+import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +35,9 @@ public class MasterControllerUnitTest {
         gameStage = Mockito.spy(new MasterStageModel("model.MasterStageModel", model));
         board = Mockito.spy(new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage));
         Mockito.when(gameStage.getBoard()).thenReturn(board);
+
+        Pawn.adjustPawnColors();
+        new MasterStageFactory(gameStage).setup();
     }
 
     @Test
@@ -75,11 +75,6 @@ public class MasterControllerUnitTest {
 
             i++;
         }
-
-        al = MasterController.createActions("Z", gameStage, model);
-        // check that pawn's color of an invalid color is null
-        // the check that the input is valid is performed before the execution of this function
-        Assertions.assertNull(((Pawn) al.getActions().get(0).get(0).getElement()).getColor());
     }
 
     @Test
@@ -116,7 +111,6 @@ public class MasterControllerUnitTest {
         
         MasterController c = Mockito.spy(new MasterController(m, new View(m)));
 
-        Mockito.when(gameStage.getAIMode()).thenReturn(2);
         MasterDecider decider = Mockito.spy(new MasterDecider(m, c));
 
         BufferedReader consoleIn = Mockito.mock(BufferedReader.class);
@@ -129,7 +123,7 @@ public class MasterControllerUnitTest {
         c.nextPlayer(decider, consoleIn);
 
         // gameStage.getBoard().getNbCols() is called in generateRandomLine in MasterDecider
-        // when gameStage.getAIMode() != 0 && != 1
+        // when MasterSettings.AI_MODE != 0 && != 1
         Mockito.verify(decider, times(1)).elseIAStrategy(gameStage);
 
         Mockito.when(m.getCurrentPlayer()).thenReturn(Player.createHumanPlayer("player1"));

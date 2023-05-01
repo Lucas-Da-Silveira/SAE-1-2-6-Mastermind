@@ -15,7 +15,7 @@ public class Pawn extends GameElement {
         RED, WHITE
     }
 
-    public static final Map<Character, Pawn.Color> inputColor;
+    public static final Map<Character, Color> inputColor;
     static {
         inputColor = new LinkedHashMap<>();
         for (Color c : Color.values()) {
@@ -36,6 +36,18 @@ public class Pawn extends GameElement {
         this.color = color;
         this.row = row;
         this.col = col;
+    }
+
+    public static void adjustPawnColors() {
+        int counter = 0;
+        for (Color c : Color.values()) {
+            if (c == Color.RED || c == Color.WHITE) continue;
+            if (counter >= MasterSettings.NB_COLORS) {
+                inputColor.remove(c.name().charAt(0));
+            }
+
+            counter++;
+        }
     }
 
     public Color getColor() {
