@@ -18,16 +18,16 @@ import model.MasterStageModel;
 import model.Pawn;
 
 public class MasterController extends Controller {
-    BufferedReader consoleIn;
-
     public MasterController(Model model, View view) {
         super(model, view);
     }
 
     @Override
     public void stageLoop() {
-        consoleIn = new BufferedReader(new InputStreamReader(System.in));
+        stageLoop(new BufferedReader(new InputStreamReader(System.in)));
+    }
 
+    public void stageLoop(BufferedReader consoleIn) {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
 
         new Thread(() -> gameStage.setupCallbacks(this)).start();
@@ -63,7 +63,7 @@ public class MasterController extends Controller {
         endGame();
     }
 
-    public void nextPlayer(MasterDecider decider, BufferedReader _consoleIn) {
+    public void nextPlayer(MasterDecider decider, BufferedReader consoleIn) {
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
             System.out.println("COMPUTER PLAYS");
@@ -74,7 +74,7 @@ public class MasterController extends Controller {
             while (!ok) {
                 System.out.print(p.getName()+ " > ");
                 try {
-                    String line = _consoleIn.readLine().toUpperCase();
+                    String line = consoleIn.readLine().toUpperCase();
                     ok = analyseAndPlay(line, (MasterStageModel) model.getGameStage(), model);
                     if (!ok) {
                         System.out.println("incorrect instruction. retry !");
