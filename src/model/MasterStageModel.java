@@ -104,7 +104,7 @@ public class MasterStageModel extends GameStageModel {
         model.stopStage();
     }
 
-    private int numberCorrectPawns(StringBuilder code, StringBuilder answer) {
+    public int numberCorrectPawns(StringBuilder code, StringBuilder answer) {
         int result = 0;
         for (int i = 0; i < code.length(); i++) {
             if (code.charAt(i) == answer.charAt(i) && code.charAt(i) != 'X' && answer.charAt(i) != 'X') {
@@ -116,7 +116,7 @@ public class MasterStageModel extends GameStageModel {
         return result;
     }
 
-    private int numberCommonPawns(StringBuilder code, StringBuilder answer) {
+    public int numberCommonPawns(StringBuilder code, StringBuilder answer) {
         int result = 0;
         for (int i = 0; i < code.length(); i++) {
             for (int j = 0; j < answer.length(); j++) {
