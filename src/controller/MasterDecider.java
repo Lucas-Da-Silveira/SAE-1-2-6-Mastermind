@@ -8,14 +8,15 @@ import model.MasterSettings;
 import model.MasterStageModel;
 import model.Pawn;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public class MasterDecider extends Decider {
     private static final Random random = new Random();
+    private List<Character> possibleInput;
 
     public MasterDecider(Model model, Controller control) {
         super(model, control);
+        this.possibleInput = getPossibleInputChar();
     }
 
     @Override
@@ -27,8 +28,8 @@ public class MasterDecider extends Decider {
     }
 
     public String generateLine(MasterStageModel gameStage, int AIMode) {
-        // if (AIMode == 0) return firstIAStrategy();
-        // if (AIMode == 1) return secondIAStrategy();
+        if (AIMode == 0) return firstIAStrategy(gameStage);
+        if (AIMode == 1) return secondIAStrategy(gameStage);
         return elseIAStrategy(gameStage);
     }
 
@@ -48,4 +49,73 @@ public class MasterDecider extends Decider {
 
         return result.toString();
     }
+
+    private String firstIAStrategy(MasterStageModel gameStage) {
+        String result;
+
+        if(gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLORS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
+            gameStage.answer.addAll(Collections.nCopies(gameStage.getNbMatch() + gameStage.getNbCommon(), this.possibleInput.get(gameStage.getRowsCompleted() - 1)));
+            if(gameStage.answer.size() == MasterSettings.NB_COLS) {
+                gameStage.turn = 0;
+            }
+        }
+
+        if(numberCorrectColor(gameStage) != MasterSettings.NB_COLS && gameStage.getRowsCompleted() < MasterSettings.NB_COLORS) {
+            result = this.possibleInput.get(gameStage.getRowsCompleted()).toString().repeat(MasterSettings.NB_COLS);
+        } else {
+            StringBuilder test = new StringBuilder();
+            gameStage.answer.forEach(c -> test.append(c));
+            gameStage.possibleAnswer = getPermutation(test.toString());
+            gameStage.possibleAnswer = new ArrayList<>(new HashSet<>(gameStage.possibleAnswer));
+            result = gameStage.possibleAnswer.get(gameStage.turn);
+            gameStage.turn++;
+        }
+
+        return result;
+    }
+
+    private String secondIAStrategy(MasterStageModel gameStage) {
+        return "BBBB";
+    }
+
+    private List<Character> getPossibleInputChar() {
+        List<Character> input = new ArrayList<>();
+
+        Pawn.inputColor.forEach(((character, color) -> {
+            input.add(character);
+        }));
+
+        return input;
+    }
+
+    private int numberCorrectColor(MasterStageModel gameStage) {
+        int result = 0;
+        for (int i = 0; i < gameStage.answer.size(); i++) {
+            result += gameStage.answer.get(i) == null ? 0 : 1;
+        }
+        return result;
+    }
+
+    private ArrayList<String> getPermutation(String str) {
+        if (str.length() == 0) {
+            ArrayList<String> empty = new ArrayList<>();
+            empty.add("");
+            return empty;
+        }
+
+        char c = str.charAt(0);
+        String subStr = str.substring(1);
+        ArrayList<String> prevResult = getPermutation(subStr);
+        ArrayList<String> res = new ArrayList<>();
+
+        for (String val : prevResult) {
+            for (int i = 0; i <= val.length(); i++) {
+                res.add(val.substring(0, i) + c + val.substring(i));
+            }
+        }
+
+        return res;
+
+    }
+
 }

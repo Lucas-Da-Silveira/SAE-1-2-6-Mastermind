@@ -26,6 +26,11 @@ public class MasterStageModel extends GameStageModel {
     private ArrayList<Pawn> checkPawns;
     private Map<Character, Pawn> colorPawns;
     private Map<Pawn.Color, List<Pawn>> colorPotLists;
+    private int nbMatch;
+    private int nbCommon;
+    public List<Character> answer;
+    public List<String> possibleAnswer;
+    public int turn;
 
     public MasterStageModel(String name, Model model) {
         super(name, model);
@@ -35,6 +40,9 @@ public class MasterStageModel extends GameStageModel {
         checkPawns = new ArrayList<>();
         colorPawns = new HashMap<> ();
         colorPotLists = new HashMap<Pawn.Color, List<Pawn>>();
+        answer = new ArrayList<>();
+        possibleAnswer = new ArrayList<>();
+        turn = 0;
     }
 
     public void setupCallbacks(Controller control) {
@@ -48,8 +56,6 @@ public class MasterStageModel extends GameStageModel {
             if (pawns.size() % board.getNbCols() == 0) {
                 ActionList actions = new ActionList(true);
 
-                int nbMatch = 0;
-                int nbCommon = 0;
                 int yPos = 0;
                 int row = getRowsCompleted();
                 StringBuilder secretCombinationTmp = new StringBuilder(secretCombination);
@@ -80,7 +86,7 @@ public class MasterStageModel extends GameStageModel {
                     move = new MoveAction(model, p, "checkboard", row, yPos);
                     actions.addSingleAction(move);
                 }
-                System.out.println(nbMatch);
+
                 if (nbMatch == board.getNbCols()) {
                     // win
                     computePartyResult(true);
@@ -225,6 +231,10 @@ public class MasterStageModel extends GameStageModel {
             addElement(cp);
         }
     }
+
+    public int getNbMatch() { return this.nbMatch; }
+
+    public int getNbCommon() { return this.nbCommon; }
 
     @Override
     public StageElementsFactory getDefaultElementFactory() {
