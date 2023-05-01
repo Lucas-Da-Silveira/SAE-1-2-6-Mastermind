@@ -48,32 +48,37 @@ public class MasterStageModel extends GameStageModel {
             if (pawns.size() % board.getNbCols() == 0) {
                 ActionList actions = new ActionList(true);
 
-                int yPlacement = 0;
                 int nbMatch = 0;
+                int nbCommon = 0;
+                int yPos = 0;
+                int row = getRowsCompleted();
                 StringBuilder secretCombinationTmp = new StringBuilder(secretCombination);
+                StringBuilder pawnsTmp = new StringBuilder();
+                Pawn p;
+                GameAction move;
 
-                for (int i = pawns.size() - board.getNbCols(), j = 0; i < pawns.size(); i++, j++) {
-                    int matchingIndex = secretCombinationTmp.indexOf(Character.toString(pawns.get(i).getColor().name().charAt(0)));
+                for (int i = 0; i < pawns.size(); i++) {
+                    pawnsTmp.append(pawns.get(i).getColor().name().charAt(0));
+                }
 
-                    if (pawns.get(i).getColor().name().charAt(0) == secretCombinationTmp.charAt(j) || matchingIndex != -1) {
-                        int row = getRowsCompleted();
+                pawnsTmp = new StringBuilder(pawnsTmp.substring(MasterSettings.NB_COLS * row, MasterSettings.NB_COLS * (row + 1)));
+                nbMatch = numberCorrectPawns(secretCombinationTmp, pawnsTmp);
+                nbCommon = numberCommonPawns(secretCombinationTmp, pawnsTmp);
 
-                        Pawn p;
-                        if (pawns.get(i).getColor().name().charAt(0) == secretCombinationTmp.charAt(j)) {
-                            p = new Pawn(Pawn.Color.RED, row, yPlacement, this);
-                            secretCombinationTmp.setCharAt(matchingIndex, ' ');
-                            nbMatch++;
-                        } else {
-                            p = new Pawn(Pawn.Color.WHITE, row, yPlacement, this);
-                            secretCombinationTmp.setCharAt(j, ' ');
-                        }
+                for (yPos = 0; yPos < nbMatch; yPos++) {
+                    p = colorPotLists.get(Pawn.Color.RED).get(row * MasterSettings.NB_COLS + yPos);
+                    p.setVisible(true);
+                    checkBoard.putElement(p, row, yPos);
+                    move = new MoveAction(model, p, "checkboard", row, yPos);
+                    actions.addSingleAction(move);
+                }
 
-                        checkBoard.putElement(p, row, yPlacement);
-                        GameAction move = new MoveAction(model, p, "checkboard", row, yPlacement);
-
-                        actions.addSingleAction(move);
-                        yPlacement++;
-                    }
+                for (; yPos < nbCommon + nbMatch; yPos++) {
+                    p = colorPotLists.get(Pawn.Color.WHITE).get(row * MasterSettings.NB_COLS + yPos);
+                    p.setVisible(true);
+                    checkBoard.putElement(p, row, yPos);
+                    move = new MoveAction(model, p, "checkboard", row, yPos);
+                    actions.addSingleAction(move);
                 }
 
                 if (nbMatch == board.getNbCols()) {
@@ -97,6 +102,31 @@ public class MasterStageModel extends GameStageModel {
     private void computePartyResult(boolean win) {
         model.setIdWinner(win ? 1 : 0);
         model.stopStage();
+    }
+
+    private int numberCorrectPawns(StringBuilder code, StringBuilder answer) {
+        int result = 0;
+        for (int i = 0; i < code.length(); i++) {
+            if (code.charAt(i) == answer.charAt(i) && code.charAt(i) != 'X' && answer.charAt(i) != 'X') {
+                code.replace(i, i+1, "X");
+                result++;
+            }
+        }
+        return result;
+    }
+
+    private int numberCommonPawns(StringBuilder code, StringBuilder answer) {
+        int result = 0;
+        for (int i = 0; i < code.length(); i++) {
+            for (int j = 0; j < answer.length(); j++) {
+                if(code.charAt(i) == answer.charAt(j) && code.charAt(i) != 'X' && answer.charAt(j) != 'X') {
+                    result++;
+                    answer.replace(j, j+1, "X");
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     public MasterBoard getBoard() {
