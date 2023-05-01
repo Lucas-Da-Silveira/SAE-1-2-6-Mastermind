@@ -75,7 +75,27 @@ public class MasterDecider extends Decider {
     }
 
     private String secondIAStrategy(MasterStageModel gameStage) {
-        return "BBBB";
+        String result;
+
+        if(gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLORS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
+            gameStage.answer.addAll(Collections.nCopies(gameStage.getNbMatch() + gameStage.getNbCommon(), this.possibleInput.get(gameStage.getRowsCompleted() - 1)));
+            if(gameStage.answer.size() == MasterSettings.NB_COLS) {
+                gameStage.turn = 0;
+            }
+        }
+
+        if(numberCorrectColor(gameStage) != MasterSettings.NB_COLS && gameStage.getRowsCompleted() < MasterSettings.NB_COLORS) {
+            result = this.possibleInput.get(gameStage.getRowsCompleted()).toString().repeat(MasterSettings.NB_COLS);
+        } else {
+            StringBuilder test = new StringBuilder();
+            gameStage.answer.forEach(c -> test.append(c));
+            gameStage.possibleAnswer = getPermutation(test.toString());
+            gameStage.possibleAnswer = new ArrayList<>(new HashSet<>(gameStage.possibleAnswer));
+            result = gameStage.possibleAnswer.get(gameStage.turn);
+            gameStage.turn++;
+        }
+
+        return result;
     }
 
     private List<Character> getPossibleInputChar() {

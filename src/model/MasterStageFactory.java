@@ -15,10 +15,10 @@ public class MasterStageFactory extends StageElementsFactory {
 
     @Override
     public void setup() {
-        stageModel.setBoard(new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
-        stageModel.setCheckBoard(new MasterBoard(MasterSettings.NB_COLS + 10, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
-        stageModel.setColorsBoard(new ColorsBoard(0, MasterSettings.NB_ROWS + 2, 1, MasterSettings.NB_COLORS, stageModel));
-        stageModel.setColorPot(new MasterBoard(2 * MasterSettings.NB_COLS + 20, 0, Pawn.Color.values().length, MasterSettings.NB_ROWS*MasterSettings.NB_COLS, stageModel));
+        stageModel.setBoard(new MasterBoard(0, 2, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
+        stageModel.setCheckBoard(new MasterBoard(MasterSettings.NB_COLS + 10, 2, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
+        stageModel.setColorsBoard(new ColorsBoard(0, MasterSettings.NB_ROWS + 4, 1, MasterSettings.NB_COLORS, stageModel));
+        stageModel.setColorPot(new MasterBoard(2 * MasterSettings.NB_COLS + 20, 2, Pawn.Color.values().length, MasterSettings.NB_ROWS*MasterSettings.NB_COLS, stageModel));
         stageModel.getColorPot().setVisible(false);
 
         final int[] i = {0};
