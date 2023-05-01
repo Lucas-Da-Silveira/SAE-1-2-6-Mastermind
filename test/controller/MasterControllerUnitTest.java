@@ -1,5 +1,6 @@
 package controller;
 
+import boardifier.model.GameException;
 import boardifier.model.GridElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 public class MasterControllerUnitTest {
@@ -132,5 +134,53 @@ public class MasterControllerUnitTest {
 
         // if not a computer, then it calls analyseAndPlay with valid human input "YYPG"
         Mockito.verify(c, times(1)).analyseAndPlay(input, gameStage, m);
+    }
+
+    @Test
+    public void testStageLoop() throws GameException {
+        String secret = "GGGG";
+
+        Model m = Mockito.mock(Model.class);
+
+        Mockito.when(gameStage.getGrids()).thenReturn(new ArrayList<>(List.of(board)));
+
+        Mockito.when(m.getElements()).thenReturn(new ArrayList<>(List.of(new Pawn(Pawn.Color.GREEN, 0, 0, gameStage))));
+        Mockito.when(m.isEndStage()).thenReturn(false, true);
+        Mockito.when(m.getCurrentPlayer()).thenReturn(Player.createComputerPlayer("computer1"), Player.createHumanPlayer("player1"));
+        Mockito.when(m.getGameStage()).thenReturn(gameStage);
+
+        MasterController c = Mockito.spy(new MasterController(m, new View(m)));
+
+        BufferedReader consoleIn = Mockito.mock(BufferedReader.class);
+        try {
+            Mockito.when(consoleIn.readLine()).thenReturn(secret, secret);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        doNothing().when(c).update();
+        doNothing().when(c).setElementLocationToCellCenter(Mockito.any());
+        doNothing().when(c).endGame();
+        doNothing().when(c).stopStage();
+
+        // c.setFirstStageName("master");
+        // c.startGame();
+        c.stageLoop(consoleIn);
+
+        // board.getNbCols is only called in MasterDecider.generateRandomLine
+        // here it's called two times
+        // 1st call : for the computer to generate a secret combination
+        // 2st call : for the computer to play 1 time
+        Mockito.verify(board, times(2)).getNbCols();
+        for (Pawn p : gameStage.getPawns()) {
+            Assertions.assertEquals(p.getColor(), Pawn.Color.GREEN);
+        }
+
+        Mockito.when(m.getCurrentPlayer()).thenReturn(Player.createHumanPlayer("player1"));
+
+        c.stageLoop(consoleIn);
+
+        Mockito.verify(c, times(2)).verifyLine(secret, gameStage);
+        Assertions.assertEquals(m.getIdWinner(), 0);
     }
 }

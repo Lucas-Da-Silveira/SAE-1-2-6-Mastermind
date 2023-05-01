@@ -39,9 +39,9 @@ public class MasterDecider extends Decider {
     public static String generateRandomLine(MasterStageModel gameStage) {
         Object[] colors = Pawn.inputColor.keySet().toArray();
         StringBuilder result = new StringBuilder();
-        System.out.println(Arrays.toString(colors));
 
-        for (int i = 0; i < gameStage.getBoard().getNbCols(); i++) {
+        int nbCols = gameStage.getBoard().getNbCols();
+        for (int i = 0; i < nbCols; i++) {
             int r = random.nextInt(colors.length);
             result.append(colors[r]);
         }
