@@ -11,12 +11,6 @@ import java.util.regex.Pattern;
 
 public class MasterMind {
     public static void main(String[] args) {
-        // ex pour lancer le jeu joueur vs ordinateur, 5 couleurs, 5 rangées, premiere ia :
-        // java MasterMind 1 --colors=5 --cols=5 --aimode=0
-        // aimode :
-        // 0 = 1st strategy
-        // 1 = 2nd strategy
-        // else = "dumb" strategy (plays random)
         int mode = 0;
 
         try {
