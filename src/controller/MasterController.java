@@ -103,7 +103,7 @@ public class MasterController extends Controller {
             Pawn.Color color = Pawn.inputColor.get(line.charAt(i));
             int row = gameStage.getRowsCompleted();
 
-            Pawn p = gameStage.getColorPotLists().get(color).get(gameStage.getRowsCompleted() + i);
+            Pawn p = gameStage.getColorPotLists().get(color).get(gameStage.getRowsCompleted() * MasterSettings.NB_COLS + i);
             p.setVisible(true);
 
             gameStage.getBoard().putElement(p, row, i);

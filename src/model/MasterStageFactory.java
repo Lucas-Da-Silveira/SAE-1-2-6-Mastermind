@@ -22,8 +22,8 @@ public class MasterStageFactory extends StageElementsFactory {
         stageModel.getColorPot().setVisible(false);
 
         final int[] i = {0};
-        Map<Character, Pawn> colorPawns = new HashMap<>();
-        Map<Pawn.Color, List<Pawn>> colorPot = new HashMap<>();
+        Map<Character, Pawn> colorPawns = new LinkedHashMap<>();
+        Map<Pawn.Color, List<Pawn>> colorPot = new LinkedHashMap<>();
         for (Pawn.Color color : Pawn.Color.values()) {
             colorPawns.put(color.name().charAt(0), new Pawn(color, 0, i[0], stageModel));
             colorPot.put(color, new ArrayList<>());

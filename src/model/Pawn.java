@@ -4,7 +4,7 @@ import boardifier.model.ElementTypes;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Pawn extends GameElement {
@@ -17,7 +17,7 @@ public class Pawn extends GameElement {
 
     public static final Map<Character, Pawn.Color> inputColor;
     static {
-        inputColor = new HashMap<>();
+        inputColor = new LinkedHashMap<>();
         for (Color c : Color.values()) {
             if (c == Color.RED || c == Color.WHITE) continue;
             inputColor.put(c.name().charAt(0), c);

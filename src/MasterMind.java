@@ -47,7 +47,7 @@ public class MasterMind {
         int counter = 0;
         for (Pawn.Color c : Pawn.Color.values()) {
             if (c == Pawn.Color.RED || c == Pawn.Color.WHITE) continue;
-            if (counter >= MasterSettings.AI_MODE) {
+            if (counter >= MasterSettings.NB_COLORS) {
                 Pawn.inputColor.remove(c.name().charAt(0), c);
             }
 
