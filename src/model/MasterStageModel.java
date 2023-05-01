@@ -80,7 +80,7 @@ public class MasterStageModel extends GameStageModel {
                     move = new MoveAction(model, p, "checkboard", row, yPos);
                     actions.addSingleAction(move);
                 }
-
+                System.out.println(nbMatch);
                 if (nbMatch == board.getNbCols()) {
                     // win
                     computePartyResult(true);
@@ -91,7 +91,7 @@ public class MasterStageModel extends GameStageModel {
 
                 this.incrementRowsCompleted();
 
-                if (rowsCompleted >= board.getNbRows()) {
+                if (rowsCompleted >= board.getNbRows() && nbMatch != board.getNbCols()) {
                     // loose
                     computePartyResult(false);
                 }
