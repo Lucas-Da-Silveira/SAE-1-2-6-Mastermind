@@ -53,7 +53,7 @@ public class MasterDecider extends Decider {
     private String firstIAStrategy(MasterStageModel gameStage) {
         String result;
 
-        if(gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLORS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
+        if(gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
             gameStage.answer.addAll(Collections.nCopies(gameStage.getNbMatch() + gameStage.getNbCommon(), this.possibleInput.get(gameStage.getRowsCompleted() - 1)));
             if(gameStage.answer.size() == MasterSettings.NB_COLS) {
                 gameStage.turn = 0;
@@ -77,7 +77,7 @@ public class MasterDecider extends Decider {
     private String secondIAStrategy(MasterStageModel gameStage) {
         String result;
 
-        if(gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLORS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
+        if(gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
             gameStage.answer.addAll(Collections.nCopies(gameStage.getNbMatch() + gameStage.getNbCommon(), this.possibleInput.get(gameStage.getRowsCompleted() - 1)));
             if(gameStage.answer.size() == MasterSettings.NB_COLS) {
                 gameStage.turn = 0;
