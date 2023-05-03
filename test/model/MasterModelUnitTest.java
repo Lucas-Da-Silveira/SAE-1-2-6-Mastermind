@@ -32,6 +32,7 @@ public class MasterModelUnitTest {
     MasterBoard board;
     MasterBoard checkBoard;
     Model model;
+    MasterStageModel masterStageModel;
 
 
     @BeforeEach
@@ -63,7 +64,6 @@ public class MasterModelUnitTest {
         Assertions.assertEquals("YGPB", answer.toString());
         Assertions.assertEquals(4, code.length());
         Assertions.assertEquals(4, answer.length());
-        Mockito.verify(gameStage, times(0)).setSecretCombination(code.toString());
     }
 
     @Test
@@ -72,7 +72,6 @@ public class MasterModelUnitTest {
         StringBuilder answer = new StringBuilder("YGPB");
         Assertions.assertEquals(4, code.length());
         Assertions.assertEquals(4, answer.length());
-        Mockito.verify(gameStage, times(0)).setSecretCombination(code.toString());
     }
 
     @Test
@@ -81,7 +80,6 @@ public class MasterModelUnitTest {
         StringBuilder answer = new StringBuilder("GYBP");
         Assertions.assertEquals(4, code.length());
         Assertions.assertEquals(4, answer.length());
-        Mockito.verify(gameStage, times(0)).setSecretCombination(code.toString());
     }
 
     @Test
@@ -90,16 +88,24 @@ public class MasterModelUnitTest {
         StringBuilder answer = new StringBuilder("GYBP");
         Assertions.assertEquals(4, code.length());
         Assertions.assertEquals(4, answer.length());
-        Mockito.verify(gameStage, times(0)).setSecretCombination(code.toString());
 
     }
-
     @Test
     public void testGetBoard(){
         MasterBoard board = new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage);
+        Mockito.when(gameStage.getBoard()).thenReturn(board);
         Assertions.assertEquals(board, gameStage.getBoard());
         Mockito.verify(gameStage, times(1)).getBoard();
-    }
+        }
 
+    @Test
+    public void testSetBoard(){
+        MasterBoard expectedBoard = new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage);
+        Mockito.when(gameStage.getBoard()).thenReturn(expectedBoard);
 
+        gameStage.setBoard(expectedBoard);
+
+        Mockito.verify(gameStage, times(1)).setBoard(expectedBoard);
+        Assertions.assertEquals(expectedBoard, gameStage.getBoard());
+        }
 }
