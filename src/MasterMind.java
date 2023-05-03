@@ -11,12 +11,6 @@ import java.util.regex.Pattern;
 
 public class MasterMind {
     public static void main(String[] args) {
-        // ex pour lancer le jeu joueur vs ordinateur, 5 couleurs, 5 rangées, premiere ia :
-        // java MasterMind 1 --colors=5 --cols=5 --aimode=0
-        // aimode :
-        // 0 = 1st strategy
-        // 1 = 2nd strategy
-        // else = "dumb" strategy (plays random)
         int mode = 0;
 
         try {
@@ -31,8 +25,8 @@ public class MasterMind {
                 if (matcher.find()) {
                     String name = matcher.group(1);
                     int value = Integer.parseInt(matcher.group(2));
-                    if (name.equals("colors") && (value >= 1) && (value <= (Pawn.Color.values().length - 2))) {
-                        MasterSettings.NB_COLORS = value;
+                    if (name.equals("colors") && value >= 1) {
+                        MasterSettings.NB_COLORS = Math.min(value, (Pawn.Color.values().length - 2));
                     } else if (name.equals("rows") && value >= 1) {
                         MasterSettings.NB_ROWS = value;
                     } else if (name.equals("cols") && value >= 1) {
