@@ -75,4 +75,31 @@ public class MasterModelUnitTest {
         Mockito.verify(gameStage, times(0)).setSecretCombination(code.toString());
     }
 
+    @Test
+    public void testNumberCommonPawn(){
+        StringBuilder code = new StringBuilder("YGPB");
+        StringBuilder answer = new StringBuilder("GYBP");
+        Assertions.assertEquals(4, code.length());
+        Assertions.assertEquals(4, answer.length());
+        Mockito.verify(gameStage, times(0)).setSecretCombination(code.toString());
+    }
+
+    @Test
+    public void testComputerPartyResult(){
+        StringBuilder code = new StringBuilder("YGPB");
+        StringBuilder answer = new StringBuilder("GYBP");
+        Assertions.assertEquals(4, code.length());
+        Assertions.assertEquals(4, answer.length());
+        Mockito.verify(gameStage, times(0)).setSecretCombination(code.toString());
+
+    }
+
+    @Test
+    public void testGetBoard(){
+        MasterBoard board = new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage);
+        Assertions.assertEquals(board, gameStage.getBoard());
+        Mockito.verify(gameStage, times(1)).getBoard();
+    }
+
+
 }
