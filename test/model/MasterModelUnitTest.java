@@ -63,6 +63,16 @@ public class MasterModelUnitTest {
         Assertions.assertEquals("YGPB", answer.toString());
         Assertions.assertEquals(4, code.length());
         Assertions.assertEquals(4, answer.length());
-
+        Mockito.verify(gameStage, times(0)).setSecretCombination(code.toString());
     }
+
+    @Test
+    public void testNumberCorrectPawn(){
+        StringBuilder code = new StringBuilder("YGPB");
+        StringBuilder answer = new StringBuilder("YGPB");
+        Assertions.assertEquals(4, code.length());
+        Assertions.assertEquals(4, answer.length());
+        Mockito.verify(gameStage, times(0)).setSecretCombination(code.toString());
+    }
+
 }
