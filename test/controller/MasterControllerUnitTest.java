@@ -22,24 +22,10 @@ import java.util.List;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
-public class MasterControllerUnitTest {
-    Model model;
-    MasterController controller;
-    MasterStageModel gameStage;
-    MasterBoard board;
-
+public class MasterControllerUnitTest extends ControllerUnitTest {
     @BeforeEach
     public void setup() {
-        model = new Model();
-        controller = new MasterController(model, new View(model));
-
-        // used Mockito's spy method so that other functions in the class are initialized
-        gameStage = Mockito.spy(new MasterStageModel("model.MasterStageModel", model));
-        board = Mockito.spy(new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage));
-        Mockito.when(gameStage.getBoard()).thenReturn(board);
-
-        Pawn.adjustPawnColors();
-        new MasterStageFactory(gameStage).setup();
+        super.init();
     }
 
     @Test

@@ -218,6 +218,10 @@ public class MasterStageModel extends GameStageModel {
         }
     }
 
+    public List<Character> getAnswer() {
+        return answer;
+    }
+
     public ArrayList<Pawn> getCheckPawns() {
         return this.checkPawns;
     }

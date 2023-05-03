@@ -16,7 +16,7 @@ public class MasterDecider extends Decider {
 
     public MasterDecider(Model model, Controller control) {
         super(model, control);
-        this.possibleInput = getPossibleInputChar();
+        this.possibleInput = getPossibleInputChar(Pawn.inputColor);
     }
 
     @Override
@@ -98,25 +98,25 @@ public class MasterDecider extends Decider {
         return result;
     }
 
-    private List<Character> getPossibleInputChar() {
+    public List<Character> getPossibleInputChar(Map<Character, Pawn.Color> inputColor) {
         List<Character> input = new ArrayList<>();
 
-        Pawn.inputColor.forEach(((character, color) -> {
+        inputColor.forEach(((character, color) -> {
             input.add(character);
         }));
 
         return input;
     }
 
-    private int numberCorrectColor(MasterStageModel gameStage) {
+    public int numberCorrectColor(MasterStageModel gameStage) {
         int result = 0;
-        for (int i = 0; i < gameStage.answer.size(); i++) {
-            result += gameStage.answer.get(i) == null ? 0 : 1;
+        for (int i = 0; i < gameStage.getAnswer().size(); i++) {
+            result += gameStage.getAnswer().get(i) == null ? 0 : 1;
         }
         return result;
     }
 
-    private ArrayList<String> getPermutation(String str) {
+    public ArrayList<String> getPermutation(String str) {
         if (str.length() == 0) {
             ArrayList<String> empty = new ArrayList<>();
             empty.add("");
