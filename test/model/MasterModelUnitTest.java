@@ -1,28 +1,14 @@
 package model;
 
 import boardifier.control.Controller;
-import boardifier.model.GameStageModel;
-import boardifier.model.GridElement;
 import boardifier.model.Model;
-import boardifier.model.Player;
-import boardifier.model.action.ActionList;
-import boardifier.model.action.GameAction;
-import boardifier.model.action.MoveAction;
 import boardifier.view.View;
 import controller.MasterController;
-import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 
@@ -48,64 +34,61 @@ public class MasterModelUnitTest {
         Pawn.adjustPawnColors();
         new MasterStageFactory(gameStage).setup();
     }
-    @Test
-    public void testPawn() {
-        Pawn pawn = new Pawn(Pawn.Color.BLUE, 0, 0, gameStage);
-        Assertions.assertEquals(pawn.getColor(), Pawn.Color.BLUE);
-        Assertions.assertEquals(pawn.getRow(), 0);
-        Assertions.assertEquals(pawn.getCol(), 0);
-    }
 
     @Test
-    public void testCorrectPawn() {
-        StringBuilder code = new StringBuilder("YGPB");
-        StringBuilder answer = new StringBuilder("YGPB");
-        Assertions.assertEquals("YGPB", code.toString());
-        Assertions.assertEquals("YGPB", answer.toString());
-        Assertions.assertEquals(4, code.length());
-        Assertions.assertEquals(4, answer.length());
-    }
-
-    @Test
-    public void testNumberCorrectPawn(){
-        StringBuilder code = new StringBuilder("YGPB");
-        StringBuilder answer = new StringBuilder("YGPB");
-        Assertions.assertEquals(4, code.length());
-        Assertions.assertEquals(4, answer.length());
-    }
-
-    @Test
-    public void testNumberCommonPawn(){
+    public void testNumberCommonPawns() {
         StringBuilder code = new StringBuilder("YGPB");
         StringBuilder answer = new StringBuilder("GYBP");
-        Assertions.assertEquals(4, code.length());
-        Assertions.assertEquals(4, answer.length());
+
+        Assertions.assertEquals(gameStage.numberCommonPawns(code, answer), 4);
+
+        code = new StringBuilder("GGGG");
+        answer = new StringBuilder("BBBB");
+
+        Assertions.assertEquals(gameStage.numberCommonPawns(code, answer), 0);
+
+        Assertions.assertEquals(gameStage.numberCommonPawns(new StringBuilder(""), new StringBuilder("")), 0);
+
+        code = new StringBuilder("GBYP");
+        answer = new StringBuilder("YKKK");
+        Assertions.assertEquals(gameStage.numberCommonPawns(code, answer), 1);
     }
 
     @Test
-    public void testComputerPartyResult(){
+    public void testNumberCorrectPawns() {
         StringBuilder code = new StringBuilder("YGPB");
         StringBuilder answer = new StringBuilder("GYBP");
-        Assertions.assertEquals(4, code.length());
-        Assertions.assertEquals(4, answer.length());
 
+        Assertions.assertEquals(gameStage.numberCorrectPawns(code, answer), 0);
+
+        code = new StringBuilder("YBGB");
+        answer = new StringBuilder("GYGY");
+
+        Assertions.assertEquals(gameStage.numberCorrectPawns(new StringBuilder(code), new StringBuilder(answer)), 1);
+        Assertions.assertEquals(gameStage.numberCorrectPawns(answer, code), 1);
+        Assertions.assertEquals(code.toString(), "YBXB");
+        Assertions.assertEquals(answer.toString(), "GYXY");
+
+        Assertions.assertEquals(gameStage.numberCorrectPawns(new StringBuilder("XXXX"), new StringBuilder("XXXX")), 0);
+        Assertions.assertThrows(StringIndexOutOfBoundsException.class, () -> { gameStage.numberCorrectPawns(new StringBuilder("XXX"), new StringBuilder("XX")); });
     }
     @Test
-    public void testGetBoard(){
-        MasterBoard board = new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage);
-        Mockito.when(gameStage.getBoard()).thenReturn(board);
-        Assertions.assertEquals(board, gameStage.getBoard());
-        Mockito.verify(gameStage, times(1)).getBoard();
-        }
+    public void testAddPawn() {
+        gameStage.addPawn(new Pawn(Pawn.Color.WHITE, 0, 0, gameStage));
+        gameStage.addPawn(new Pawn(Pawn.Color.RED, 0, 1, gameStage));
 
-    @Test
-    public void testSetBoard(){
-        MasterBoard expectedBoard = new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage);
-        Mockito.when(gameStage.getBoard()).thenReturn(expectedBoard);
+        Assertions.assertEquals(gameStage.getCheckPawns().size(), 2);
+        Assertions.assertEquals(gameStage.getPawns().size(), 0);
 
-        gameStage.setBoard(expectedBoard);
+        gameStage.addPawn(new Pawn(Pawn.Color.GREEN, 0, 2, gameStage));
+        gameStage.addPawn(new Pawn(Pawn.Color.BLUE, 0, 3, gameStage));
 
-        Mockito.verify(gameStage, times(1)).setBoard(expectedBoard);
-        Assertions.assertEquals(expectedBoard, gameStage.getBoard());
-        }
+        Assertions.assertEquals(gameStage.getCheckPawns().size(), 2);
+        Assertions.assertEquals(gameStage.getPawns().size(), 2);
+
+        Assertions.assertEquals(gameStage.getCheckPawns().get(0).getColor(), Pawn.Color.WHITE);
+        Assertions.assertEquals(gameStage.getCheckPawns().get(1).getColor(), Pawn.Color.RED);
+        Assertions.assertEquals(gameStage.getPawns().get(0).getColor(), Pawn.Color.GREEN);
+        Assertions.assertEquals(gameStage.getPawns().get(1).getColor(), Pawn.Color.BLUE);
+    }
 }
