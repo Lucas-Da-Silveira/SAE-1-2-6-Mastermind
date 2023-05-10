@@ -8,6 +8,7 @@ import model.MasterSettings;
 import model.MasterStageModel;
 import model.Pawn;
 
+import java.security.SecureRandom;
 import java.util.*;
 
 public class MasterDecider extends Decider {
@@ -76,23 +77,35 @@ public class MasterDecider extends Decider {
 
     private String secondIAStrategy(MasterStageModel gameStage) {
         String result;
+        SecureRandom rand = new SecureRandom();
+        StringBuilder temp = new StringBuilder();
+        int randomIndex;
 
-        if(gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
-            gameStage.answer.addAll(Collections.nCopies(gameStage.getNbMatch() + gameStage.getNbCommon(), this.possibleInput.get(gameStage.getRowsCompleted() - 1)));
-            if(gameStage.answer.size() == MasterSettings.NB_COLS) {
-                gameStage.turn = 0;
+        if(gameStage.getRowsCompleted() == 0) {
+            gameStage.possibleAnswer = getAllPossibilities(this.possibleInput, MasterSettings.NB_COLS);
+            randomIndex = rand.nextInt(gameStage.possibleAnswer.size());
+            for (int i = 0; i < gameStage.possibleAnswer.get(randomIndex).length(); i++) {
+                gameStage.answer.add(gameStage.possibleAnswer.get(randomIndex).charAt(i));
             }
-        }
-
-        if(numberCorrectColor(gameStage) != MasterSettings.NB_COLS && gameStage.getRowsCompleted() < MasterSettings.NB_COLORS) {
-            result = this.possibleInput.get(gameStage.getRowsCompleted()).toString().repeat(MasterSettings.NB_COLS);
+            result = gameStage.possibleAnswer.get(randomIndex);
         } else {
-            StringBuilder test = new StringBuilder();
-            gameStage.answer.forEach(c -> test.append(c));
-            gameStage.possibleAnswer = getPermutation(test.toString());
-            gameStage.possibleAnswer = new ArrayList<>(new HashSet<>(gameStage.possibleAnswer));
-            result = gameStage.possibleAnswer.get(gameStage.turn);
-            gameStage.turn++;
+            if (gameStage.getNbCommon() + gameStage.getNbMatch() == MasterSettings.NB_COLS) {
+                if (gameStage.turn == 0) {
+                    gameStage.answer.forEach(temp::append);
+                    gameStage.possibleAnswer = getPermutation(temp.toString());
+                }
+                result = gameStage.possibleAnswer.get(gameStage.turn);
+                gameStage.turn++;
+            } else {
+                gameStage.answer.forEach(temp::append);
+                gameStage.possibleAnswer.removeAll(getPermutation(temp.toString()));
+                gameStage.answer = new ArrayList<>();
+                randomIndex = rand.nextInt(gameStage.possibleAnswer.size());
+                for (int i = 0; i < gameStage.possibleAnswer.get(randomIndex).length(); i++) {
+                    gameStage.answer.add(gameStage.possibleAnswer.get(randomIndex).charAt(i));
+                }
+                result = gameStage.possibleAnswer.get(randomIndex);
+            }
         }
 
         return result;
@@ -106,6 +119,23 @@ public class MasterDecider extends Decider {
         }));
 
         return input;
+    }
+
+    public List<String> getAllPossibilities(List<Character> possibleCharacters, int size) {
+        List<String> result = new ArrayList<>();
+        generatePossibility(result, possibleCharacters, "", size);
+        return result;
+    }
+
+    public void generatePossibility(List<String> list, List<Character> possibleCharacters, String str, int size) {
+        if (size == 0) {
+            list.add(str);
+            return;
+        }
+
+        for (int i = 0; i < possibleCharacters.size(); i++) {
+            generatePossibility(list, possibleCharacters, str + possibleCharacters.get(i).toString(), size - 1);
+        }
     }
 
     public int numberCorrectColor(MasterStageModel gameStage) {
