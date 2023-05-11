@@ -22,11 +22,21 @@ public class MasterController extends Controller {
         super(model, view);
     }
 
+    /**
+     * Executes the main loop of the game stage.
+     * Reads input from the system console.
+     * This method overrides the stageLoop() method from the superclass.
+     */
     @Override
     public void stageLoop() {
         stageLoop(new BufferedReader(new InputStreamReader(System.in)));
     }
 
+    /**
+     * Executes the main loop of the game stage.
+     *
+     * @param consoleIn The BufferedReader object to read input from the console.
+     */
     public void stageLoop(BufferedReader consoleIn) {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
 
@@ -35,7 +45,7 @@ public class MasterController extends Controller {
         String line = "";
         if (model.getCurrentPlayer().getType() == Player.COMPUTER) {
             line = MasterDecider.generateRandomLine(gameStage);
-            System.out.println(model.getCurrentPlayer().getName() + ", chose the colors");
+            System.out.println(model.getCurrentPlayer().getName() + " chose the colors");
         } else {
             boolean ok = false;
             while (!ok) {
@@ -63,6 +73,12 @@ public class MasterController extends Controller {
         endGame();
     }
 
+    /**
+     * Determines the next player's turn and prompts for their input or initiates computer play.
+     *
+     * @param decider     The MasterDecider object used for computer player's decision-making.
+     * @param consoleIn   The BufferedReader object to read input from the console.
+     */
     public void nextPlayer(MasterDecider decider, BufferedReader consoleIn) {
         Player p = model.getCurrentPlayer();
         if (p.getType() == Player.COMPUTER) {
@@ -84,6 +100,14 @@ public class MasterController extends Controller {
         }
     }
 
+    /**
+     * Analyzes the input line and plays the corresponding actions if the line is valid.
+     *
+     * @param line       The input line to analyze.
+     * @param gameStage  The MasterStageModel object representing the game stage.
+     * @param _model     The Model object representing the game model.
+     * @return True if the line is valid and the actions are played successfully, False otherwise.
+     */
     public boolean analyseAndPlay(String line, MasterStageModel gameStage, Model _model) {
         if (!verifyLine(line, gameStage)) return false;
 
@@ -95,6 +119,14 @@ public class MasterController extends Controller {
         return true;
     }
 
+    /**
+     * Creates a list of actions based on the input line and game stage information.
+     *
+     * @param line       The input line representing the colors to create actions for.
+     * @param gameStage  The MasterStageModel object representing the game stage.
+     * @param model      The Model object representing the game model.
+     * @return An ActionList object containing the created actions.
+     */
     public static ActionList createActions(String line, MasterStageModel gameStage, Model model) {
         ActionList actions = new ActionList(true);
 
@@ -114,6 +146,13 @@ public class MasterController extends Controller {
         return actions;
     }
 
+    /**
+     * Verifies if the input line is valid.
+     *
+     * @param line       The input line to analyze.
+     * @param gameStage  The MasterStageModel object representing the game stage.
+     * @return True if the line is valid, False otherwise.
+     */
     public boolean verifyLine(String line, MasterStageModel gameStage) {
         if (line.length() != gameStage.getBoard().getNbCols()) return false;
 

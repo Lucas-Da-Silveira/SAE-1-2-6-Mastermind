@@ -13,13 +13,18 @@ import java.util.*;
 
 public class MasterDecider extends Decider {
     private static final Random random = new Random();
-    private List<Character> possibleInput;
+    private final List<Character> possibleInput;
 
     public MasterDecider(Model model, Controller control) {
         super(model, control);
         this.possibleInput = getPossibleInputChar(Pawn.inputColor);
     }
 
+    /**
+     * Generates a random line of colors and creates a corresponding list of actions based on the game stage and model.
+     *
+     * @return An ActionList object containing the created actions.
+     */
     @Override
     public ActionList decide() {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
@@ -28,16 +33,34 @@ public class MasterDecider extends Decider {
         return MasterController.createActions(randomLine, gameStage, model);
     }
 
+    /**
+     * Generates a random line of colors and creates a corresponding list of actions based on the game stage and model.
+     *
+     * @return An ActionList object containing the created actions.
+     */
     public String generateLine(MasterStageModel gameStage, int AIMode) {
         if (AIMode == 0) return firstIAStrategy(gameStage);
         if (AIMode == 1) return secondIAStrategy(gameStage);
         return elseIAStrategy(gameStage);
     }
 
+    /**
+     * Implements the strategy for the "else" case in the AI decision-making process.
+     * Generates a random line of colors based on the given game stage.
+     *
+     * @param gameStage The MasterStageModel object representing the game stage.
+     * @return A randomly generated line of colors.
+     */
     public String elseIAStrategy(MasterStageModel gameStage) {
         return generateRandomLine(gameStage);
     }
 
+    /**
+     * Generates a random line of colors based on the given game stage.
+     *
+     * @param gameStage The MasterStageModel object representing the game stage.
+     * @return A randomly generated line of colors.
+     */
     public static String generateRandomLine(MasterStageModel gameStage) {
         Object[] colors = Pawn.inputColor.keySet().toArray();
         StringBuilder result = new StringBuilder();
@@ -51,6 +74,12 @@ public class MasterDecider extends Decider {
         return result.toString();
     }
 
+    /**
+     * Implements the strategy for the first case in the AI decision-making process.
+     *
+     * @param gameStage The MasterStageModel object representing the game stage.
+     * @return The generated line of colors based on the strategy.
+     */
     private String firstIAStrategy(MasterStageModel gameStage) {
         String result;
 
@@ -65,7 +94,7 @@ public class MasterDecider extends Decider {
             result = this.possibleInput.get(gameStage.getRowsCompleted()).toString().repeat(MasterSettings.NB_COLS);
         } else {
             StringBuilder test = new StringBuilder();
-            gameStage.answer.forEach(c -> test.append(c));
+            gameStage.answer.forEach(test::append);
             gameStage.possibleAnswer = getPermutation(test.toString());
             gameStage.possibleAnswer = new ArrayList<>(new HashSet<>(gameStage.possibleAnswer));
             result = gameStage.possibleAnswer.get(gameStage.turn);
@@ -75,6 +104,12 @@ public class MasterDecider extends Decider {
         return result;
     }
 
+    /**
+     * Implements the strategy for the second case in the AI decision-making process.
+     *
+     * @param gameStage The MasterStageModel object representing the game stage.
+     * @return The generated line of colors based on the strategy.
+     */
     private String secondIAStrategy(MasterStageModel gameStage) {
         String result;
         SecureRandom rand = new SecureRandom();
@@ -111,6 +146,12 @@ public class MasterDecider extends Decider {
         return result;
     }
 
+    /**
+     * Retrieves a list of possible input characters from the given input-color mapping.
+     *
+     * @param inputColor The input-color mapping.
+     * @return A list of possible input characters.
+     */
     public List<Character> getPossibleInputChar(Map<Character, Pawn.Color> inputColor) {
         List<Character> input = new ArrayList<>();
 
@@ -121,12 +162,27 @@ public class MasterDecider extends Decider {
         return input;
     }
 
+    /**
+     * Generates all possible combinations of characters from the given list of possible characters.
+     *
+     * @param possibleCharacters The list of possible characters.
+     * @param size              The size of the combinations to generate.
+     * @return A list of all possible combinations.
+     */
     public List<String> getAllPossibilities(List<Character> possibleCharacters, int size) {
         List<String> result = new ArrayList<>();
         generatePossibility(result, possibleCharacters, "", size);
         return result;
     }
 
+    /**
+     * Recursively generates all possible combinations of characters from the given list of possible characters.
+     *
+     * @param list              The list to store the generated combinations.
+     * @param possibleCharacters The list of possible characters.
+     * @param str               The current combination being constructed.
+     * @param size              The remaining size of the combinations to generate.
+     */
     public void generatePossibility(List<String> list, List<Character> possibleCharacters, String str, int size) {
         if (size == 0) {
             list.add(str);
@@ -138,6 +194,12 @@ public class MasterDecider extends Decider {
         }
     }
 
+    /**
+     * Calculates the number of correct colors in the current answer of the game stage.
+     *
+     * @param gameStage The MasterStageModel object representing the game stage.
+     * @return The number of correct colors in the answer.
+     */
     public int numberCorrectColor(MasterStageModel gameStage) {
         int result = 0;
         for (int i = 0; i < gameStage.getAnswer().size(); i++) {
@@ -146,6 +208,12 @@ public class MasterDecider extends Decider {
         return result;
     }
 
+    /**
+     * Generates all possible permutations of the characters in the given string.
+     *
+     * @param str The input string.
+     * @return An ArrayList containing all possible permutations.
+     */
     public ArrayList<String> getPermutation(String str) {
         if (str.length() == 0) {
             ArrayList<String> empty = new ArrayList<>();
