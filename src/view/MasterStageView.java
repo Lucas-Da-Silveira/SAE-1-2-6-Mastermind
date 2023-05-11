@@ -10,10 +10,22 @@ import model.MasterStageModel;
 import model.Pawn;
 
 public class MasterStageView extends GameStageView {
+
+    /**
+     * Constructs a new instance of the MasterStageView class with the given name and game stage model.
+     *
+     * @param name            the name of the stage view
+     * @param gameStageModel  the game stage model associated with the stage view
+     */
     public MasterStageView(String name, GameStageModel gameStageModel) {
         super(name, gameStageModel);
     }
 
+    /**
+     * Overrides the createLooks() method to create looks for the Master stage view.
+     *
+     * @throws GameException if an error occurs during the creation of looks
+     */
     @Override
     public void createLooks() throws GameException {
         MasterStageModel model = (MasterStageModel)gameStageModel;
