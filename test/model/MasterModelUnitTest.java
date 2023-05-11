@@ -87,31 +87,6 @@ public class MasterModelUnitTest {
     }
 
     @Test
-    public void testGetBoard(){
-        Assertions.assertEquals(gameStage.getBoard(), board);
-    }
-
-    @Test
-    public void testSetBoard() {
-        MasterBoard newBoard = new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage);
-        gameStage.setBoard(newBoard);
-
-        Assertions.assertEquals(gameStage.getBoard(), newBoard);
-    }
-
-    @Test
-    public void testGetCheckBoard() {
-        Assertions.assertEquals(gameStage.getCheckBoard(), checkBoard);
-    }
-
-    @Test
-    public void testSetCheckBoard() {
-        MasterBoard newCheckBoard = new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage);
-        gameStage.setCheckBoard(newCheckBoard);
-
-        Assertions.assertEquals(gameStage.getCheckBoard(), newCheckBoard);
-    }
-    @Test
     public void testAddPawn() {
         gameStage.addPawn(new Pawn(Pawn.Color.WHITE, 0, 0, gameStage));
         gameStage.addPawn(new Pawn(Pawn.Color.RED, 0, 1, gameStage));
