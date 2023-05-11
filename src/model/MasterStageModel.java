@@ -2,7 +2,6 @@ package model;
 
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
-import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.Model;
 import boardifier.model.StageElementsFactory;
@@ -10,7 +9,10 @@ import boardifier.model.action.ActionList;
 import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MasterStageModel extends GameStageModel {
     private MasterBoard board;
@@ -71,8 +73,8 @@ public class MasterStageModel extends GameStageModel {
                 Pawn p;
                 GameAction move;
 
-                for (int i = 0; i < pawns.size(); i++) {
-                    pawnsTmp.append(pawns.get(i).getColor().name().charAt(0));
+                for (Pawn pawn : pawns) {
+                    pawnsTmp.append(pawn.getColor().name().charAt(0));
                 }
 
                 pawnsTmp = new StringBuilder(pawnsTmp.substring(MasterSettings.NB_COLS * row, MasterSettings.NB_COLS * (row + 1)));

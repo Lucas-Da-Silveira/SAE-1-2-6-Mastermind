@@ -2,7 +2,6 @@ package view;
 
 import boardifier.model.GameException;
 import boardifier.model.GameStageModel;
-import boardifier.view.ElementLook;
 import boardifier.view.GameStageView;
 import boardifier.view.GridLook;
 import model.MasterSettings;

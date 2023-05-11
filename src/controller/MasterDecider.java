@@ -13,7 +13,7 @@ import java.util.*;
 
 public class MasterDecider extends Decider {
     private static final Random random = new Random();
-    private List<Character> possibleInput;
+    private final List<Character> possibleInput;
 
     public MasterDecider(Model model, Controller control) {
         super(model, control);
@@ -94,7 +94,7 @@ public class MasterDecider extends Decider {
             result = this.possibleInput.get(gameStage.getRowsCompleted()).toString().repeat(MasterSettings.NB_COLS);
         } else {
             StringBuilder test = new StringBuilder();
-            gameStage.answer.forEach(c -> test.append(c));
+            gameStage.answer.forEach(test::append);
             gameStage.possibleAnswer = getPermutation(test.toString());
             gameStage.possibleAnswer = new ArrayList<>(new HashSet<>(gameStage.possibleAnswer));
             result = gameStage.possibleAnswer.get(gameStage.turn);

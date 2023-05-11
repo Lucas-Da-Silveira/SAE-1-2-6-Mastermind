@@ -36,9 +36,9 @@ public class Pawn extends GameElement {
         }
     }
 
-    private Color color;
-    private int row;
-    private int col;
+    private final Color color;
+    private final int row;
+    private final int col;
 
     /**
      * Constructor for creating a Pawn object.

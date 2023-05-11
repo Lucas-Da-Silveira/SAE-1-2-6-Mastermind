@@ -6,7 +6,7 @@ import boardifier.model.StageElementsFactory;
 import java.util.*;
 
 public class MasterStageFactory extends StageElementsFactory {
-    private MasterStageModel stageModel;
+    private final MasterStageModel stageModel;
 
     public MasterStageFactory(GameStageModel gameStageModel) {
         super(gameStageModel);
