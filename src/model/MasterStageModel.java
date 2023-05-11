@@ -157,7 +157,6 @@ public class MasterStageModel extends GameStageModel {
         this.colors = _colors;
         addGrid(this.colors);
     }
-
     public MasterBoard getColorPot() { return this.colorPot; }
 
     public void setColorPot(MasterBoard _colorPot) {
