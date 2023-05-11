@@ -45,7 +45,7 @@ public class MasterController extends Controller {
         String line = "";
         if (model.getCurrentPlayer().getType() == Player.COMPUTER) {
             line = MasterDecider.generateRandomLine(gameStage);
-            System.out.println(model.getCurrentPlayer().getName() + ", chose the colors");
+            System.out.println(model.getCurrentPlayer().getName() + " chose the colors");
         } else {
             boolean ok = false;
             while (!ok) {

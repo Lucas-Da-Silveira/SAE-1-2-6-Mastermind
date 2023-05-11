@@ -66,7 +66,7 @@ public class MasterStageModel extends GameStageModel {
 
                 int yPos = 0;
                 int row = getRowsCompleted();
-                StringBuilder secretCombinationTmp = new StringBuilder(secretCombination);
+                StringBuilder secretCombinationTmp = new StringBuilder(getSecretCombination());
                 StringBuilder pawnsTmp = new StringBuilder();
                 Pawn p;
                 GameAction move;
@@ -95,17 +95,15 @@ public class MasterStageModel extends GameStageModel {
                     actions.addSingleAction(move);
                 }
 
-                if (nbMatch == board.getNbCols()) {
-                    // win
-                    computePartyResult(true);
-                }
+                this.incrementRowsCompleted();
 
                 ActionPlayer play = new ActionPlayer(model, control, actions);
                 play.start();
 
-                this.incrementRowsCompleted();
-
-                if (rowsCompleted >= board.getNbRows() && nbMatch != board.getNbCols()) {
+                if (nbMatch == board.getNbCols()) {
+                    // win
+                    computePartyResult(true);
+                } else if (rowsCompleted >= board.getNbRows() && nbMatch != board.getNbCols()) {
                     // loose
                     computePartyResult(false);
                 }
@@ -118,7 +116,7 @@ public class MasterStageModel extends GameStageModel {
      *
      * @param win A boolean indicating whether the player won the game.
      */
-    private void computePartyResult(boolean win) {
+    public void computePartyResult(boolean win) {
         model.setIdWinner(win ? 1 : 0);
         model.stopStage();
     }
