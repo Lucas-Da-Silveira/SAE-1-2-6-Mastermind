@@ -13,6 +13,10 @@ public class MasterStageFactory extends StageElementsFactory {
         stageModel = (MasterStageModel) gameStageModel;
     }
 
+    /**
+     * Sets up the initial configuration of the game stage.
+     * Overrides the setup method from the parent class.
+     */
     @Override
     public void setup() {
         stageModel.setBoard(new MasterBoard(0, 2, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
