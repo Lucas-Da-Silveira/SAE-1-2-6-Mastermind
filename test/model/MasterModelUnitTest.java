@@ -1,7 +1,6 @@
 package model;
 
 import boardifier.control.Controller;
-import boardifier.model.GridElement;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.view.View;
@@ -13,12 +12,11 @@ import org.mockito.Mockito;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 

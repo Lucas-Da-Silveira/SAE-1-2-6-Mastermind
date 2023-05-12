@@ -1,8 +1,5 @@
 package controller;
 
-import boardifier.model.Model;
-import boardifier.view.View;
-import model.MasterStageModel;
 import model.Pawn;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

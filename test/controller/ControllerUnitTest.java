@@ -3,7 +3,6 @@ package controller;
 import boardifier.model.Model;
 import boardifier.view.View;
 import model.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
 public class ControllerUnitTest {

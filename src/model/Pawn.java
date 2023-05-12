@@ -27,8 +27,12 @@ public class Pawn extends GameElement {
     /**
      * Map that maps characters to pawn colors for user input.
      */
-    public static final Map<Character, Color> inputColor;
+    public static Map<Character, Color> inputColor;
     static {
+        initInputColor();
+    }
+
+    public static void initInputColor() {
         inputColor = new LinkedHashMap<>();
         for (Color c : Color.values()) {
             if (c == Color.RED || c == Color.WHITE) continue;
