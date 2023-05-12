@@ -28,3 +28,8 @@ Exemple : Lancer une partie joueur vs ordinateur, 10 rangées, 5 cases, 3 couleu
 ```
 1 --rows=10 --cols=5 --colors=3 --aimode=1
 ```
+
+Pour faire jouer les traces (situées dans le dossier `traces`), utiliser la redirection d'entrée avec `<`. Exemple :
+```
+java MasterMind 0 < /path/to/traces.txt
+```
