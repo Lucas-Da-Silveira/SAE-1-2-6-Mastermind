@@ -2,6 +2,8 @@
 
 Groupe n°6
 
+Lien du repo : https://github.com/Lucas-Da-Silveira/SAE-1-2-6-Mastermind
+
 Membres du groupe :
 - Lucas DA SILVEIRA (@Lucas-Da-Silveira)
 - Théo GASNER (@tgasner)
@@ -22,7 +24,7 @@ Pour le choix de la stratégie de l'ordinateur, utiliser le paramètre `--aimode
 - Stratégie `1` : deuxième stratégie
 - Autre stratégie (pas de paramètre ou autre nombre) : stratégie jouant aléatoirement
 
-Exemple : Lancer une partie joueur vs ordinateur, 10 rangées, 5 cases, 3 couleurs :
+Exemple : Lancer une partie joueur vs ordinateur, 10 rangées, 5 cases, 3 couleurs, deuxième stratégie
 ```
-1 --rows=10 --cols=5 --colors=3
+1 --rows=10 --cols=5 --colors=3 --aimode=1
 ```
