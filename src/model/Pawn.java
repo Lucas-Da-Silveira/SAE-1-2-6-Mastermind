@@ -3,6 +3,8 @@ package model;
 import boardifier.model.ElementTypes;
 import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
+import boardifier.model.animation.AnimationStep;
+import boardifier.view.GridGeometry;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -75,6 +77,19 @@ public class Pawn extends GameElement {
             }
 
             counter++;
+        }
+    }
+
+    @Override
+    public void update(double width, double height, GridGeometry gridGeometry) {
+        if (animation != null) {
+            AnimationStep step = animation.next();
+            if (step != null) {
+                setLocation(step.getInt(0), step.getInt(1));
+            }
+            else {
+                animation = null;
+            }
         }
     }
 

@@ -1,7 +1,9 @@
 package model;
 
+import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.StageElementsFactory;
+import boardifier.model.TextElement;
 
 import java.util.*;
 
@@ -64,5 +66,9 @@ public class MasterStageFactory extends StageElementsFactory {
             i[0]++;
         });
 
+        TextElement text = new TextElement(stageModel.getCurrentPlayerName(), stageModel);
+        text.setLocation(10,30);
+        text.setLocationType(GameElement.LOCATION_TOPLEFT);
+        stageModel.setPlayerName(text);
     }
 }

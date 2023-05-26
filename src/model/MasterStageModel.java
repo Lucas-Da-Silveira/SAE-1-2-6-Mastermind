@@ -5,6 +5,7 @@ import boardifier.control.Controller;
 import boardifier.model.GameStageModel;
 import boardifier.model.Model;
 import boardifier.model.StageElementsFactory;
+import boardifier.model.TextElement;
 import boardifier.model.action.ActionList;
 import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
@@ -30,6 +31,7 @@ public class MasterStageModel extends GameStageModel {
     public List<Character> answer;
     public List<String> possibleAnswer;
     public int turn;
+    private TextElement playerName;
 
     /**
      * Constructs a new MasterStageModel with the given name and model.
@@ -56,6 +58,15 @@ public class MasterStageModel extends GameStageModel {
      * @param control The controller associated with the stage.
      */
     public void setupCallbacks(Controller control) {
+        onSelectionChange(() -> {
+            if (selected.size() == 0) {
+                board.resetReachableCells(false);
+                return;
+            }
+            Pawn pawn = (Pawn) selected.get(0);
+            board.setValidCells(getRowsCompleted());
+        });
+
         onPutInGrid((element, gridDest, rowDest, colDest) -> {
             if (gridDest != board && gridDest != checkBoard) return;
             if (((Pawn)element).isInCheckBoard() && gridDest == checkBoard) {
@@ -384,6 +395,14 @@ public class MasterStageModel extends GameStageModel {
      * @return The number of common pawns.
      */
     public int getNbCommon() { return this.nbCommon; }
+
+    public TextElement getPlayerName() {
+        return this.playerName;
+    }
+
+    public void setPlayerName(TextElement _playerName) {
+        playerName = _playerName;
+    }
 
     /**
      * Returns the default element factory for the MasterStageModel.
