@@ -2,8 +2,14 @@ package controller;
 
 import boardifier.control.Controller;
 import boardifier.control.Decider;
+import boardifier.model.Coord2D;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
+import boardifier.model.action.GameAction;
+import boardifier.model.action.MoveAction;
+import boardifier.model.animation.AnimationTypes;
+import boardifier.view.GridLook;
+import model.MasterBoard;
 import model.MasterSettings;
 import model.MasterStageModel;
 import model.Pawn;
@@ -28,9 +34,16 @@ public class MasterDecider extends Decider {
     @Override
     public ActionList decide() {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
+        MasterBoard board = gameStage.getBoard();
         String randomLine = generateLine(gameStage, MasterSettings.AI_MODE);
 
-        return MasterController.createActions(randomLine, gameStage, model);
+        ActionList actions = new ActionList(true);
+        GridLook look = (GridLook) control.getElementLook(board);
+        Coord2D center = look.getRootPaneLocationForCellCenter(rowDest, colDest);
+        GameAction move = new MoveAction(model, pawn, "holeboard", rowDest, colDest, AnimationTypes.MOVELINEARPROP_NAME, center.getX(), center.getY(), 10);
+        actions.addSingleAction(move);
+
+        return MasterController.createActions(randomLine, gameStage, model, (MasterController) control);
     }
 
     /**

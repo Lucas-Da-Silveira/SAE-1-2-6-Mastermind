@@ -48,7 +48,7 @@ public class MasterControllerUnitTest extends ControllerUnitTest {
         final String input = "BYGP";
         Mockito.when(gameStage.getRowsCompleted()).thenReturn(currentRow);
 
-        ActionList al = MasterController.createActions(input, gameStage, model);
+        ActionList al = MasterController.createActions(input, gameStage, model, controller);
 
         int i = 0;
         for (List<GameAction> listAction : al.getActions()) {

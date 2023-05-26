@@ -2,17 +2,21 @@ package controller;
 
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
+import boardifier.model.Coord2D;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
+import boardifier.model.animation.AnimationTypes;
+import boardifier.view.GridLook;
 import boardifier.view.View;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import javafx.geometry.Point2D;
 import model.MasterSettings;
 import model.MasterStageModel;
 import model.Pawn;
@@ -111,7 +115,7 @@ public class MasterController extends Controller {
     public boolean analyseAndPlay(String line, MasterStageModel gameStage, Model _model) {
         if (!verifyLine(line, gameStage)) return false;
 
-        ActionList actions = createActions(line, gameStage, _model);
+        ActionList actions = createActions(line, gameStage, _model, this);
 
         ActionPlayer play = new ActionPlayer(_model, this, actions);
         play.start();
@@ -127,7 +131,7 @@ public class MasterController extends Controller {
      * @param model      The Model object representing the game model.
      * @return An ActionList object containing the created actions.
      */
-    public static ActionList createActions(String line, MasterStageModel gameStage, Model model) {
+    public static ActionList createActions(String line, MasterStageModel gameStage, Model model, MasterController control) {
         ActionList actions = new ActionList(true);
 
         for (int i = 0; i < line.length(); i++) {
@@ -138,7 +142,10 @@ public class MasterController extends Controller {
             p.setVisible(true);
 
             gameStage.getBoard().putElement(p, row, i);
-            GameAction move = new MoveAction(model, p, "masterboard", row, i);
+
+            GridLook look = (GridLook) control.getElementLook(gameStage.getBoard());
+            Point2D center = look.getRootPaneLocationForCellCenter(row, i);
+            GameAction move = new MoveAction(model, p, "masterboard", row, i, AnimationTypes.MOVELINEARPROP_NAME, center.getX(), center.getY(), 10);
 
             actions.addSingleAction(move);
         }
