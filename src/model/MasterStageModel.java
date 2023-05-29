@@ -9,6 +9,9 @@ import boardifier.model.TextElement;
 import boardifier.model.action.ActionList;
 import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
+import boardifier.model.animation.AnimationTypes;
+import boardifier.view.GridLook;
+import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MasterStageModel extends GameStageModel {
+    // states
+    public final static int STATE_SELECTPAWN = 1; // the player must select a pawn
+    public final static int STATE_SELECTDEST = 2; // the player must select a destination
+
     private MasterBoard board;
     private MasterBoard checkBoard;
     private ColorsBoard colors;
@@ -96,7 +103,9 @@ public class MasterStageModel extends GameStageModel {
                     p = colorPotLists.get(Pawn.Color.RED).get(row * MasterSettings.NB_COLS + yPos);
                     p.setVisible(true);
                     checkBoard.putElement(p, row, yPos);
-                    move = new MoveAction(model, p, "checkboard", row, yPos);
+                    GridLook look = (GridLook) control.getElementLook(this.getBoard());
+                    Point2D center = look.getRootPaneLocationForCellCenter(row, yPos);
+                    move = new MoveAction(model, p, "checkboard", row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
                     actions.addSingleAction(move);
                 }
 
@@ -104,7 +113,9 @@ public class MasterStageModel extends GameStageModel {
                     p = colorPotLists.get(Pawn.Color.WHITE).get(row * MasterSettings.NB_COLS + yPos);
                     p.setVisible(true);
                     checkBoard.putElement(p, row, yPos);
-                    move = new MoveAction(model, p, "checkboard", row, yPos);
+                    GridLook look = (GridLook) control.getElementLook(this.getBoard());
+                    Point2D center = look.getRootPaneLocationForCellCenter(row, yPos);
+                    move = new MoveAction(model, p, "checkboard", row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
                     actions.addSingleAction(move);
                 }
 
