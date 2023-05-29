@@ -24,6 +24,8 @@ import model.Pawn;
 public class MasterController extends Controller {
     public MasterController(Model model, View view) {
         super(model, view);
+        setControlMouse(new MasterControllerMouse(model, view, this));
+        setControlAction(new MasterControllerAction(model, view, this));
     }
 
     /**
@@ -31,17 +33,17 @@ public class MasterController extends Controller {
      * Reads input from the system console.
      * This method overrides the stageLoop() method from the superclass.
      */
-    @Override
+    /* @Override
     public void stageLoop() {
         stageLoop(new BufferedReader(new InputStreamReader(System.in)));
-    }
+    } */
 
     /**
      * Executes the main loop of the game stage.
      *
      * @param consoleIn The BufferedReader object to read input from the console.
      */
-    public void stageLoop(BufferedReader consoleIn) {
+    /* public void stageLoop(BufferedReader consoleIn) {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
 
         new Thread(() -> gameStage.setupCallbacks(this)).start();
@@ -75,32 +77,21 @@ public class MasterController extends Controller {
         }
         stopStage();
         endGame();
-    }
+    } */
 
-    /**
-     * Determines the next player's turn and prompts for their input or initiates computer play.
-     *
-     * @param decider     The MasterDecider object used for computer player's decision-making.
-     * @param consoleIn   The BufferedReader object to read input from the console.
-     */
-    public void nextPlayer(MasterDecider decider, BufferedReader consoleIn) {
+    public void nextPlayer() {
+        // use the default method to compute next player
+        model.setNextPlayer();
+        // get the new player
         Player p = model.getCurrentPlayer();
+        // change the text of the TextElement
+        MasterStageModel stageModel = (MasterStageModel) model.getGameStage();
+        stageModel.getPlayerName().setText(p.getName());
         if (p.getType() == Player.COMPUTER) {
             System.out.println("COMPUTER PLAYS");
+            MasterDecider decider = new MasterDecider(model,this);
             ActionPlayer play = new ActionPlayer(model, this, decider, null);
             play.start();
-        } else {
-            boolean ok = false;
-            while (!ok) {
-                System.out.print(p.getName()+ " > ");
-                try {
-                    String line = consoleIn.readLine().toUpperCase();
-                    ok = analyseAndPlay(line, (MasterStageModel) model.getGameStage(), model);
-                    if (!ok) {
-                        System.out.println("incorrect instruction. retry !");
-                    }
-                } catch (IOException ignored) {}
-            }
         }
     }
 

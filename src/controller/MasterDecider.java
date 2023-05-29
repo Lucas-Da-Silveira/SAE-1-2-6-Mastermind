@@ -37,12 +37,6 @@ public class MasterDecider extends Decider {
         MasterBoard board = gameStage.getBoard();
         String randomLine = generateLine(gameStage, MasterSettings.AI_MODE);
 
-        ActionList actions = new ActionList(true);
-        GridLook look = (GridLook) control.getElementLook(board);
-        Coord2D center = look.getRootPaneLocationForCellCenter(rowDest, colDest);
-        GameAction move = new MoveAction(model, pawn, "holeboard", rowDest, colDest, AnimationTypes.MOVELINEARPROP_NAME, center.getX(), center.getY(), 10);
-        actions.addSingleAction(move);
-
         return MasterController.createActions(randomLine, gameStage, model, (MasterController) control);
     }
 

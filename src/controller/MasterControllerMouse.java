@@ -1,0 +1,104 @@
+package controller;
+
+import boardifier.control.ActionPlayer;
+import boardifier.control.Controller;
+import boardifier.control.ControllerMouse;
+import boardifier.model.*;
+import boardifier.model.action.ActionList;
+import boardifier.model.action.GameAction;
+import boardifier.model.action.MoveAction;
+import boardifier.model.animation.AnimationTypes;
+import boardifier.view.GridLook;
+import boardifier.view.View;
+import javafx.event.*;
+import javafx.geometry.Point2D;
+import javafx.scene.input.*;
+import model.ColorsBoard;
+import model.MasterBoard;
+import model.MasterStageModel;
+import model.Pawn;
+
+import java.util.List;
+
+public class MasterControllerMouse extends ControllerMouse implements EventHandler<MouseEvent> {
+
+    public MasterControllerMouse(Model model, View view, Controller control) {
+        super(model, view, control);
+    }
+
+    public void handle(MouseEvent event) {
+        if (!model.isCaptureMouseEvent()) return;
+
+        // get the clic x,y in the whole scene (this includes the menu bar if it exists)
+        Point2D clic = new Point2D(event.getSceneX(), event.getSceneY());
+        // get elements at that position
+        List<GameElement> list = control.elementsAt(clic);
+        // for debug, uncomment next instructions to display x,y and elements at that postion
+        /*
+        System.out.println("click in "+event.getSceneX()+","+event.getSceneY());
+        for(GameElement element : list) {
+            System.out.println(element);
+        }
+         */
+        MasterStageModel stageModel = (MasterStageModel) model.getGameStage();
+
+        if (stageModel.getState() == MasterStageModel.STATE_SELECTPAWN) {
+            for (GameElement element : list) {
+                if (element.getType() == ElementTypes.getType("pawn")) {
+                    Pawn pawn = (Pawn) element;
+                    // check if color of the pawn corresponds to the current player id
+                    if (!stageModel.getPawns().contains(pawn) && !stageModel.getCheckPawns().contains(pawn)) {
+                        element.toggleSelected();
+                        stageModel.setState(MasterStageModel.STATE_SELECTDEST);
+                        return;
+                    }
+                }
+            }
+        } else if (stageModel.getState() == MasterStageModel.STATE_SELECTDEST) {
+            // first check if the click is on the current selected pawn. In this case, unselect it
+            for (GameElement element : list) {
+                if (element.isSelected()) {
+                    element.toggleSelected();
+                    stageModel.setState(MasterStageModel.STATE_SELECTPAWN);
+                    return;
+                }
+            }
+            // secondly, search if the board has been clicked. If not just return
+            boolean boardClicked = false;
+            for (GameElement element : list) {
+                if (element == stageModel.getBoard()) {
+                    boardClicked = true;
+                    break;
+                }
+            }
+            if (!boardClicked) return;
+            // get the board, pot,  and the selected pawn to simplify code in the following
+            MasterBoard board = stageModel.getBoard();
+            ColorsBoard pot = stageModel.getColorsBoard();
+            GameElement pawn = model.getSelected().get(0);
+
+            // thirdly, get the clicked cell in the main board
+            GridLook lookBoard = (GridLook) control.getElementLook(board);
+            int[] dest = lookBoard.getCellFromSceneLocation(clic);
+            // get the cell in the pot that owns the selected pawn
+            int[] from = pot.getElementCell(pawn);
+            System.out.println("try to move pawn from pot " + from[0] + "," + from[1] + " to board " + dest[0] + "," + dest[1]);
+
+            // if the destination cell is valid for the selected pawn
+            if (board.canReachCell(dest[0], dest[1])) {
+                // build the list of actions to do, and pass to the next player when done
+                ActionList actions = new ActionList(true);
+                // determine the destination point in the root pane
+                Point2D center = lookBoard.getRootPaneLocationForCellCenter(dest[0], dest[1]);
+                // create an action with a linear move animation, with 10 pixel/frame
+                GameAction move = new MoveAction(model, pawn, "masterboard", dest[0], dest[1], AnimationTypes.MOVELINEARPROP_NAME, center.getX(), center.getY(), 10);
+                // add the action to the action list.
+                actions.addSingleAction(move);
+                stageModel.unselectAll();
+                stageModel.setState(MasterStageModel.STATE_SELECTPAWN);
+                ActionPlayer play = new ActionPlayer(model, control, actions);
+                play.start();
+            }
+        }
+    }
+}
