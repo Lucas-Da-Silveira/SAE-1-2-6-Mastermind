@@ -3,20 +3,26 @@ import boardifier.model.Model;
 import boardifier.view.View;
 import controller.MasterController;
 import boardifier.model.GameException;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import model.MasterSettings;
 import model.Pawn;
+import view.MasterRootPane;
+import view.MasterView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MasterMind {
-    public static void main(String[] args) {
-        int mode = 0;
+public class MasterMind extends Application {
+    private static int mode;
 
+    public static void main(String[] args) {
         try {
             mode = Integer.parseInt(args[0]);
             if ((mode < 0) || (mode > 2)) mode = 0;
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+            mode = 0;
+        }
 
         String pattern = "--(colors|rows|cols|aimode)=(\\d+)";
         for (String arg : args) {
@@ -40,6 +46,11 @@ public class MasterMind {
 
         Pawn.adjustPawnColors();
 
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
         Model model = new Model();
         if (mode == 0) {
             model.addHumanPlayer("player1");
@@ -52,15 +63,19 @@ public class MasterMind {
             model.addComputerPlayer("computer2");
         }
 
+        // register a single stage for the game
         StageFactory.registerModelAndView("master", "model.MasterStageModel", "view.MasterStageView");
-        View masterView = new View(model);
-        MasterController control = new MasterController(model, masterView);
-        control.setFirstStageName("master");
-        try {
-            control.startGame();
-            control.stageLoop();
-        } catch (GameException e) {
-            System.out.println("Cannot start the game. Abort.");
-        }
+        // create the root pane, using the subclass HoleRootPane
+        MasterRootPane rootPane = new MasterRootPane();
+        // create the global view
+        View view = new MasterView(model, stage, rootPane);
+        // create the controllers
+        MasterController controller = new MasterController(model, view);
+        // set the name of the first stage to create when the game is started
+        controller.setFirstStageName("master");
+        // set the stage title
+        stage.setTitle("Mastermind");
+        // show the JavaFx main stage
+        stage.show();
     }
 }
