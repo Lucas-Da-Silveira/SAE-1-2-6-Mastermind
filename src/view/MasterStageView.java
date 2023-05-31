@@ -35,6 +35,7 @@ public class MasterStageView extends GameStageView {
         addLook(new MasterBoardLook(320, model.getBoard()));
         addLook(new CheckBoardLook(320, model.getCheckBoard()));
         addLook(new PawnPotLook(420, 120, model.getColorsBoard()));
+        addLook(new MasterBoardLook(320, model.getColorPot()));
 
         final int[] i = {0};
         model.getColorPawns().forEach((key, value) -> {
