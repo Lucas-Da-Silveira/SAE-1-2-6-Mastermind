@@ -1,0 +1,12 @@
+
+e	java:S117W"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‹˜’F
+N	java:S106&"9Replace this use of System.out or System.err by a logger.(Ÿ¶¹˜
+S	java:S106+"9Replace this use of System.out or System.err by a logger.(­õ¼‚ÿÿÿÿÿ
+N	java:S106/"9Replace this use of System.out or System.err by a logger.(¹ö‘Ô
+C	java:S1081")Either remove or fill this block of code.(õ÷£ğúÿÿÿÿ
+O
+java:S1161B":Add the "@Override" annotation above this method signature(š½¸>
+S	java:S106E"9Replace this use of System.out or System.err by a logger.(²ÊÈşÿÿÿÿ
+S	java:S106K"9Replace this use of System.out or System.err by a logger.(İÃøÿÿÿÿ
+N	java:S106P"9Replace this use of System.out or System.err by a logger.(¹ö‘Ô
+C	java:S108R")Either remove or fill this block of code.(õ÷£ğúÿÿÿÿ

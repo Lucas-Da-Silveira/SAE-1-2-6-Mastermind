@@ -19,8 +19,8 @@ public class MasterStageView extends GameStageView {
      */
     public MasterStageView(String name, GameStageModel gameStageModel) {
         super(name, gameStageModel);
-        width = 650;
-        height = 450;
+        width = MasterSettings.WINDOW_WIDTH;
+        height = MasterSettings.WINDOW_HEIGHT;
     }
 
     /**
@@ -31,25 +31,19 @@ public class MasterStageView extends GameStageView {
     @Override
     public void createLooks() throws GameException {
         MasterStageModel model = (MasterStageModel) gameStageModel;
+        addLook(new MasterBoardLook(MasterSettings.CELL_SIZE * MasterSettings.NB_ROWS, model.getBoard()));
+        addLook(new CheckBoardLook(MasterSettings.CELL_SIZE * MasterSettings.NB_ROWS, model.getCheckBoard()));
+        addLook(new PawnPotLook(MasterSettings.CELL_SIZE * MasterSettings.NB_COLORS, MasterSettings.CELL_SIZE, model.getColorsBoard()));
+        addLook(new MasterBoardLook(400, model.getColorPot()));
 
-        addLook(new MasterBoardLook(320, model.getBoard()));
-        addLook(new CheckBoardLook(320, model.getCheckBoard()));
-        addLook(new PawnPotLook(420, 120, model.getColorsBoard()));
-        addLook(new MasterBoardLook(320, model.getColorPot()));
-
-        final int[] i = {0};
         model.getColorPawns().forEach((key, value) -> {
-            Pawn.Color color = ((Pawn) value).getColor();
-            if (i[0] < MasterSettings.NB_COLORS && !(color == Pawn.Color.RED || color == Pawn.Color.WHITE)) {
-                addLook(new PawnLook(25, (Pawn) value));
+                addLook(new PawnLook(MasterSettings.CELL_SIZE/2, (Pawn) value));
                 // System.out.println(color + " (" + color.name().charAt(0) +")");
-                i[0]++;
-            }
         });
 
         model.getColorPotLists().forEach((color, list) -> {
             list.forEach(p -> {
-                addLook(new PawnLook(25, p));
+                addLook(new PawnLook(MasterSettings.CELL_SIZE/2, p));
             });
         });
 

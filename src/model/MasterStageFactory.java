@@ -13,6 +13,8 @@ public class MasterStageFactory extends StageElementsFactory {
     public MasterStageFactory(GameStageModel gameStageModel) {
         super(gameStageModel);
         stageModel = (MasterStageModel) gameStageModel;
+        MasterSettings.WINDOW_HEIGHT = MasterSettings.CELL_SIZE * (MasterSettings.NB_ROWS + 4);
+        MasterSettings.WINDOW_WIDTH = MasterSettings.CELL_SIZE * (MasterSettings.NB_COLS * 2 + 4);
     }
 
     /**
@@ -21,10 +23,10 @@ public class MasterStageFactory extends StageElementsFactory {
      */
     @Override
     public void setup() {
-        stageModel.setBoard(new MasterBoard(0, 2, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
-        stageModel.setCheckBoard(new MasterBoard(MasterSettings.NB_COLS + 10, 2, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
-        stageModel.setColorsBoard(new ColorsBoard(0, MasterSettings.NB_ROWS + 4, 1, MasterSettings.NB_COLORS, stageModel));
-        stageModel.setColorPot(new MasterBoard(2 * MasterSettings.NB_COLS + 20, 2, Pawn.Color.values().length, MasterSettings.NB_ROWS*MasterSettings.NB_COLS, stageModel));
+        stageModel.setBoard(new MasterBoard(0, MasterSettings.CELL_SIZE + 10, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
+        stageModel.setCheckBoard(new MasterBoard((MasterSettings.NB_COLS + 1)*MasterSettings.CELL_SIZE, MasterSettings.CELL_SIZE + 10, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
+        stageModel.setColorsBoard(new ColorsBoard(0, MasterSettings.WINDOW_HEIGHT - (MasterSettings.CELL_SIZE + 10), 1, MasterSettings.NB_COLORS, stageModel));
+        stageModel.setColorPot(new MasterBoard(2 * MasterSettings.NB_COLS + 20, 2, Pawn.Color.values().length, MasterSettings.NB_ROWS*MasterSettings.NB_COLS + MasterSettings.CELL_SIZE, stageModel));
         stageModel.getColorPot().setVisible(false);
 
         final int[] i = {0};
@@ -32,6 +34,7 @@ public class MasterStageFactory extends StageElementsFactory {
         Map<Pawn.Color, List<Pawn>> colorPot = new LinkedHashMap<>();
         for (Pawn.Color color : Pawn.Color.values()) {
             colorPawns.put(color.name().charAt(0), new Pawn(color, 0, i[0], stageModel));
+            colorPawns.get(color.name().charAt(0)).setVisible(false);
             colorPot.put(color, new ArrayList<>());
             i[0]++;
         }
@@ -51,6 +54,7 @@ public class MasterStageFactory extends StageElementsFactory {
         stageModel.getColorPawns().forEach((key, value) -> {
             if (i[0] < MasterSettings.NB_COLORS && !(((Pawn)value).getColor() == Pawn.Color.RED || ((Pawn)value).getColor() == Pawn.Color.WHITE)){
                 stageModel.getColorsBoard().putElement((Pawn)value, 0, i[0]);
+                ((Pawn)value).setVisible(true);
                 i[0]++;
             }
         });
@@ -67,7 +71,7 @@ public class MasterStageFactory extends StageElementsFactory {
         });
 
         TextElement text = new TextElement(stageModel.getCurrentPlayerName(), stageModel);
-        text.setLocation(10,30);
+        text.setLocation(10, 30);
         text.setLocationType(GameElement.LOCATION_TOPLEFT);
         stageModel.setPlayerName(text);
     }

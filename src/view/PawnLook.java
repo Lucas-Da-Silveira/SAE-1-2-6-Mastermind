@@ -55,7 +55,7 @@ public class PawnLook extends ElementLook {
         addShape(circle);
 
         Text text = new Text(String.valueOf(pawn.getColor().name().charAt(0)));
-        text.setFont(new Font(24));
+        text.setFont(new Font(radius));
         text.setStyle("-fx-text-fill: black; -fx-stroke: white; -fx-stroke-width: 2px;");
 
         Bounds bt = text.getBoundsInLocal();
