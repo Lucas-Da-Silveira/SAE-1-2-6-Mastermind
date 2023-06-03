@@ -33,7 +33,7 @@ public class MasterStageView extends GameStageView {
         MasterStageModel model = (MasterStageModel) gameStageModel;
         addLook(new MasterBoardLook(MasterSettings.CELL_SIZE * MasterSettings.NB_ROWS, model.getBoard()));
         addLook(new CheckBoardLook(MasterSettings.CELL_SIZE * MasterSettings.NB_ROWS, model.getCheckBoard()));
-        addLook(new PawnPotLook(MasterSettings.CELL_SIZE * MasterSettings.NB_COLORS, MasterSettings.CELL_SIZE, model.getColorsBoard()));
+        addLook(new PawnPotLook(MasterSettings.CELL_SIZE * 2 * MasterSettings.NB_COLORS, MasterSettings.CELL_SIZE * 2, model.getColorsBoard()));
         addLook(new MasterBoardLook(400, model.getColorPot()));
 
         model.getColorPawns().forEach((key, value) -> {

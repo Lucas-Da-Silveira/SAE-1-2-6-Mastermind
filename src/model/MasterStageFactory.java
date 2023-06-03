@@ -4,6 +4,7 @@ import boardifier.model.GameElement;
 import boardifier.model.GameStageModel;
 import boardifier.model.StageElementsFactory;
 import boardifier.model.TextElement;
+import boardifier.view.TextLook;
 
 import java.util.*;
 
@@ -23,9 +24,10 @@ public class MasterStageFactory extends StageElementsFactory {
      */
     @Override
     public void setup() {
-        stageModel.setBoard(new MasterBoard(0, MasterSettings.CELL_SIZE + 10, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
-        stageModel.setCheckBoard(new MasterBoard((MasterSettings.NB_COLS + 1)*MasterSettings.CELL_SIZE, MasterSettings.CELL_SIZE + 10, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
-        stageModel.setColorsBoard(new ColorsBoard(0, MasterSettings.WINDOW_HEIGHT - (MasterSettings.CELL_SIZE + 10), 1, MasterSettings.NB_COLORS, stageModel));
+        int spaceBetweenGrid = (MasterSettings.WINDOW_WIDTH - 2 * MasterSettings.NB_COLS * MasterSettings.CELL_SIZE)/3;
+        stageModel.setBoard(new MasterBoard(spaceBetweenGrid, MasterSettings.CELL_SIZE + 10, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
+        stageModel.setCheckBoard(new MasterBoard(MasterSettings.NB_COLS *MasterSettings.CELL_SIZE + 2 * spaceBetweenGrid, MasterSettings.CELL_SIZE + 10, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel));
+        stageModel.setColorsBoard(new ColorsBoard(MasterSettings.WINDOW_WIDTH/2 - MasterSettings.CELL_SIZE * 2 * MasterSettings.NB_COLORS/2, MasterSettings.WINDOW_HEIGHT - (MasterSettings.CELL_SIZE * 2 + 10), 1, MasterSettings.NB_COLORS, stageModel));
         stageModel.setColorPot(new MasterBoard(2 * MasterSettings.NB_COLS + 20, 2, Pawn.Color.values().length, MasterSettings.NB_ROWS*MasterSettings.NB_COLS + MasterSettings.CELL_SIZE, stageModel));
         stageModel.getColorPot().setVisible(false);
 

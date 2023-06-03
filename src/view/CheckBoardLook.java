@@ -13,19 +13,23 @@ public class CheckBoardLook extends GridLook {
     private Rectangle[][] cells;
 
     public CheckBoardLook(int size, GameElement element) {
-        super((size/MasterSettings.NB_ROWS)*MasterSettings.NB_COLS, size, (size-20) / MasterSettings.NB_ROWS, (size-20) / MasterSettings.NB_ROWS, 10, "0X000000", element);
+        super((size/MasterSettings.NB_ROWS)*MasterSettings.NB_COLS, size, ((size/MasterSettings.NB_ROWS)*MasterSettings.NB_COLS-20) / MasterSettings.NB_COLS, (size-20) / MasterSettings.NB_ROWS, 10, "0X000000", element);
         cells = new Rectangle[MasterSettings.NB_ROWS][MasterSettings.NB_COLS];
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
                 Color c;
                 if ((i + j) % 2 == 0) {
-                    c = Color.BEIGE;
+                    c = Color.LIGHTGRAY;
                 } else {
-                    c = Color.DARKGRAY;
+                    c = Color.LIGHTGRAY;
                 }
                 cells[i][j] = new Rectangle(cellWidth, cellHeight, c);
-                cells[i][j].setX(j * cellWidth + borderWidth/2);
-                cells[i][j].setY(i * cellHeight + borderWidth/2);
+                cells[i][j].setX(j * cellWidth + borderWidth);
+                cells[i][j].setY(i * cellHeight + borderWidth);
+                cells[i][j].setStrokeWidth(2);
+                cells[i][j].setStrokeMiterLimit(10);
+                cells[i][j].setStrokeType(StrokeType.CENTERED);
+                cells[i][j].setStroke(Color.valueOf("0x333333"));
                 addShape(cells[i][j]);
             }
         }
