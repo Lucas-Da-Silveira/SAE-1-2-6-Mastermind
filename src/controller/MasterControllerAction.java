@@ -40,7 +40,7 @@ public class MasterControllerAction extends ControllerAction implements EventHan
             }
         });
         // set event handler on the MenuIntro item
-        masterView.getMenuIntro().setOnAction(e -> {
+        masterView.getMenuSettings().setOnAction(e -> {
             control.stopGame();
             masterView.resetView();
         });

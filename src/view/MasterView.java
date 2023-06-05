@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class MasterView extends View {
 
     private MenuItem menuStart;
-    private MenuItem menuIntro;
+    private MenuItem menuSettings;
     private MenuItem menuQuit;
 
     public MasterView(Model model, Stage stage, RootPane rootPane) {
@@ -23,10 +23,10 @@ public class MasterView extends View {
         menuBar = new MenuBar();
         Menu menu1 = new Menu("Game");
         menuStart = new MenuItem("New game");
-        menuIntro = new MenuItem("Intro");
+        menuSettings = new MenuItem("Settings");
         menuQuit = new MenuItem("Quit");
         menu1.getItems().add(menuStart);
-        menu1.getItems().add(menuIntro);
+        menu1.getItems().add(menuSettings);
         menu1.getItems().add(menuQuit);
         menuBar.getMenus().add(menu1);
     }
@@ -35,8 +35,8 @@ public class MasterView extends View {
         return menuStart;
     }
 
-    public MenuItem getMenuIntro() {
-        return menuIntro;
+    public MenuItem getMenuSettings() {
+        return menuSettings;
     }
 
     public MenuItem getMenuQuit() {
