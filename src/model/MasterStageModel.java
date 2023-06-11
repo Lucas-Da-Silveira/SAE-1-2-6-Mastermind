@@ -22,6 +22,8 @@ public class MasterStageModel extends GameStageModel {
     // states
     public final static int STATE_SELECTPAWN = 1; // the player must select a pawn
     public final static int STATE_SELECTDEST = 2; // the player must select a destination
+    public final static int PHASE_CODE = 1;
+    public final static int PHASE_GAME = 2;
 
     private MasterBoard board;
     private MasterBoard checkBoard;
@@ -39,6 +41,7 @@ public class MasterStageModel extends GameStageModel {
     public List<String> possibleAnswer;
     public int turn;
     private TextElement playerName;
+    private int phase;
 
     /**
      * Constructs a new MasterStageModel with the given name and model.
@@ -57,6 +60,9 @@ public class MasterStageModel extends GameStageModel {
         answer = new ArrayList<>();
         possibleAnswer = new ArrayList<>();
         turn = 0;
+        state = STATE_SELECTPAWN;
+        phase = PHASE_CODE;
+        setupCallbacks();
     }
 
     /**
@@ -64,8 +70,9 @@ public class MasterStageModel extends GameStageModel {
      *
      * @param control The controller associated with the stage.
      */
-    public void setupCallbacks(Controller control) {
+    public void setupCallbacks() {
         onSelectionChange(() -> {
+            System.out.println("Change");
             if (selected.size() == 0) {
                 board.resetReachableCells(false);
                 return;
@@ -82,14 +89,12 @@ public class MasterStageModel extends GameStageModel {
             }
             pawns.add((Pawn)element);
             if (pawns.size() % board.getNbCols() == 0) {
-                ActionList actions = new ActionList(true);
 
                 int yPos = 0;
                 int row = getRowsCompleted();
                 StringBuilder secretCombinationTmp = new StringBuilder(getSecretCombination());
                 StringBuilder pawnsTmp = new StringBuilder();
                 Pawn p;
-                GameAction move;
 
                 for (Pawn pawn : pawns) {
                     pawnsTmp.append(pawn.getColor().name().charAt(0));
@@ -98,31 +103,21 @@ public class MasterStageModel extends GameStageModel {
                 pawnsTmp = new StringBuilder(pawnsTmp.substring(MasterSettings.NB_COLS * row, MasterSettings.NB_COLS * (row + 1)));
                 nbMatch = numberCorrectPawns(secretCombinationTmp, pawnsTmp);
                 nbCommon = numberCommonPawns(secretCombinationTmp, pawnsTmp);
-
+                System.out.println(this.secretCombination);
                 for (yPos = 0; yPos < nbMatch; yPos++) {
                     p = colorPotLists.get(Pawn.Color.RED).get(row * MasterSettings.NB_COLS + yPos);
                     p.setVisible(true);
                     checkBoard.putElement(p, row, yPos);
-                    GridLook look = (GridLook) control.getElementLook(this.getBoard());
-                    Point2D center = look.getRootPaneLocationForCellCenter(row, yPos);
-                    move = new MoveAction(model, p, "checkboard", row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
-                    actions.addSingleAction(move);
                 }
 
                 for (; yPos < nbCommon + nbMatch; yPos++) {
                     p = colorPotLists.get(Pawn.Color.WHITE).get(row * MasterSettings.NB_COLS + yPos);
                     p.setVisible(true);
                     checkBoard.putElement(p, row, yPos);
-                    GridLook look = (GridLook) control.getElementLook(this.getBoard());
-                    Point2D center = look.getRootPaneLocationForCellCenter(row, yPos);
-                    move = new MoveAction(model, p, "checkboard", row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
-                    actions.addSingleAction(move);
                 }
 
                 this.incrementRowsCompleted();
 
-                ActionPlayer play = new ActionPlayer(model, control, actions);
-                play.start();
 
                 if (nbMatch == board.getNbCols()) {
                     // win
@@ -425,4 +420,9 @@ public class MasterStageModel extends GameStageModel {
     public StageElementsFactory getDefaultElementFactory() {
         return new MasterStageFactory(this);
     }
+
+    public int getPhase() {
+        return this.phase;
+    }
+
 }

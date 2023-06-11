@@ -13,10 +13,7 @@ import boardifier.view.View;
 import javafx.event.*;
 import javafx.geometry.Point2D;
 import javafx.scene.input.*;
-import model.ColorsBoard;
-import model.MasterBoard;
-import model.MasterStageModel;
-import model.Pawn;
+import model.*;
 
 import java.util.List;
 
@@ -27,26 +24,28 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
     }
 
     public void handle(MouseEvent event) {
+        if (model.getCurrentPlayer().getType() == Player.COMPUTER) { return; }
         if (!model.isCaptureMouseEvent()) return;
-
         // get the clic x,y in the whole scene (this includes the menu bar if it exists)
         Point2D clic = new Point2D(event.getSceneX(), event.getSceneY());
         // get elements at that position
         List<GameElement> list = control.elementsAt(clic);
-        // for debug, uncomment next instructions to display x,y and elements at that postion
-        /*
-        System.out.println("click in "+event.getSceneX()+","+event.getSceneY());
+
+        //System.out.println("click in "+event.getSceneX()+","+event.getSceneY());
         for(GameElement element : list) {
             System.out.println(element);
+            if(element instanceof Pawn) {
+                System.out.println(((Pawn)element).getColor().name());
+                System.out.println(model.getGameStage().getState());
+            }
         }
-         */
+
         MasterStageModel stageModel = (MasterStageModel) model.getGameStage();
 
         if (stageModel.getState() == MasterStageModel.STATE_SELECTPAWN) {
             for (GameElement element : list) {
                 if (element.getType() == ElementTypes.getType("pawn")) {
                     Pawn pawn = (Pawn) element;
-                    // check if color of the pawn corresponds to the current player id
                     if (!stageModel.getPawns().contains(pawn) && !stageModel.getCheckPawns().contains(pawn)) {
                         element.toggleSelected();
                         stageModel.setState(MasterStageModel.STATE_SELECTDEST);
@@ -91,7 +90,9 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
                 // determine the destination point in the root pane
                 Point2D center = lookBoard.getRootPaneLocationForCellCenter(dest[0], dest[1]);
                 // create an action with a linear move animation, with 10 pixel/frame
-                GameAction move = new MoveAction(model, pawn, "masterboard", dest[0], dest[1], AnimationTypes.MOVELINEARPROP_NAME, center.getX(), center.getY(), 10);
+                Pawn pawnToMove = stageModel.getColorPotLists().get(((Pawn)pawn).getColor()).get(dest[0] * MasterSettings.NB_COLS + dest[1]);
+                GameAction move = new MoveAction(model, pawnToMove, "masterboard", dest[0], dest[1], AnimationTypes.MOVELINEARPROP_NAME, center.getX(), center.getY(), 10);
+                pawnToMove.setVisible(true);
                 // add the action to the action list.
                 actions.addSingleAction(move);
                 stageModel.unselectAll();

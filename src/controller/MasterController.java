@@ -26,6 +26,7 @@ public class MasterController extends Controller {
         super(model, view);
         setControlMouse(new MasterControllerMouse(model, view, this));
         setControlAction(new MasterControllerAction(model, view, this));
+
     }
 
     /**
@@ -81,7 +82,13 @@ public class MasterController extends Controller {
 
     public void nextPlayer() {
         // use the default method to compute next player
-        model.setNextPlayer();
+        if ((((MasterStageModel)model.getGameStage()).getPawns().size()%MasterSettings.NB_COLS != 0)) {
+            return;
+        }
+        if (((MasterStageModel)model.getGameStage()).getPhase() == MasterStageModel.PHASE_CODE) {
+            model.setNextPlayer();
+        }
+
         // get the new player
         Player p = model.getCurrentPlayer();
         // change the text of the TextElement

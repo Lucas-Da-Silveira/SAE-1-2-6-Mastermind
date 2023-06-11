@@ -20,10 +20,10 @@ public class MasterBoardLook extends GridLook {
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
                 Color c;
-                if ((i + j) % 2 == 0) {
-                    c = Color.BEIGE;
+                if ((i) % 2 == 0) {
+                    c = Color.valueOf("FFC26F");
                 } else {
-                    c = Color.DARKGRAY;
+                    c = Color.valueOf("0xC38154");
                 }
                 cells[i][j] = new Rectangle(cellWidth, cellHeight, c);
                 cells[i][j].setX(j * cellWidth + borderWidth);
