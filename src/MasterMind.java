@@ -70,6 +70,7 @@ public class MasterMind extends Application {
         View view = new MasterView(model, stage, rootPane);
         // create the controllers
         MasterController controller = new MasterController(model, view);
+        rootPane.addController(controller);
         // set the name of the first stage to create when the game is started
         controller.setFirstStageName("master");
         // set the stage title

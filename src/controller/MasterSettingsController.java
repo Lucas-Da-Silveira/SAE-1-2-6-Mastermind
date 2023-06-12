@@ -1,5 +1,6 @@
 package controller;
 
+import boardifier.model.GameException;
 import boardifier.model.Model;
 import model.MasterSettings;
 import view.MasterRootPane;
@@ -8,10 +9,12 @@ import view.MasterRootPane;
 public class MasterSettingsController {
     MasterRootPane rootPane;
     Model model;
+    MasterController controller;
 
-    public MasterSettingsController(MasterRootPane _rootPane, Model _model) {
+    public MasterSettingsController(MasterRootPane _rootPane, Model _model, MasterController _controller) {
         rootPane = _rootPane;
         model = _model;
+        controller = _controller;
     }
 
     public void addEvents() {
@@ -38,6 +41,13 @@ public class MasterSettingsController {
             }
 
             MasterSettings.AI_MODE = rootPane.getAIComboBox().getSelectionModel().getSelectedIndex();
+
+            try {
+                controller.startGame();
+            } catch (GameException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
         });
 
         rootPane.getModeComboBox().setOnAction(event -> {

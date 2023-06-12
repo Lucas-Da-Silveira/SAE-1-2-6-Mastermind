@@ -1,7 +1,9 @@
 package view;
 
+import boardifier.control.Controller;
 import boardifier.model.Model;
 import boardifier.view.RootPane;
+import controller.MasterController;
 import controller.MasterSettingsController;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -26,6 +28,7 @@ public class MasterRootPane extends RootPane {
     private Button btn;
 
     private Model model;
+    private MasterController controller;
 
     public MasterRootPane(Model _model) {
         super();
@@ -79,7 +82,7 @@ public class MasterRootPane extends RootPane {
 
         root.getChildren().addAll(fields, btn);
 
-        MasterSettingsController settingsController = new MasterSettingsController(this, model);
+        MasterSettingsController settingsController = new MasterSettingsController(this, model, controller);
         settingsController.addEvents();
 
         // put shapes in the group
@@ -109,5 +112,9 @@ public class MasterRootPane extends RootPane {
 
     public Button getBtn() {
         return btn;
+    }
+
+    public void addController(MasterController _controller) {
+        controller = _controller;
     }
 }
