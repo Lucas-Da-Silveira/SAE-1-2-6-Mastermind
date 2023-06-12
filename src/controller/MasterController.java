@@ -81,21 +81,65 @@ public class MasterController extends Controller {
 
     public void nextPlayer() {
         // use the default method to compute next player
-        if (((MasterStageModel)model.getGameStage()).getPhase() == MasterStageModel.PHASE_CODE && ((MasterStageModel)model.getGameStage()).getSecretCombination().length() == MasterSettings.NB_COLS) {
-            model.setNextPlayer();
-            ((MasterStageModel) model.getGameStage()).setPhase(MasterStageModel.PHASE_GAME);
+        MasterStageModel stageModel = (MasterStageModel)model.getGameStage();
+        if (stageModel.getGameState() == MasterStageModel.GAME_STATE_WIN) {
+            stageModel.computePartyResult(true);
+            return;
+        } else if (stageModel.getGameState() == MasterStageModel.GAME_STATE_LOOSE) {
+            stageModel.computePartyResult(false);
+            return;
         }
-
+        if (stageModel.getPhase() == MasterStageModel.PHASE_CODE && stageModel.getSecretCombination().length() == MasterSettings.NB_COLS) {
+            model.setNextPlayer();
+           stageModel.setPhase(MasterStageModel.PHASE_GAME);
+        }
         // get the new player
         Player p = model.getCurrentPlayer();
         // change the text of the TextElement
-        MasterStageModel stageModel = (MasterStageModel) model.getGameStage();
         stageModel.getPlayerName().setText(p.getName());
         if (p.getType() == Player.COMPUTER) {
             System.out.println("COMPUTER PLAYS");
             MasterDecider decider = new MasterDecider(model,this);
             ActionPlayer play = new ActionPlayer(model, this, decider, null);
             play.start();
+            try  {
+                play.join(1000);
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+        }
+        if (stageModel.getPhase() == MasterStageModel.PHASE_GAME && stageModel.getPawns().size()%MasterSettings.NB_COLS == 0 && !stageModel.getPawns().isEmpty()) {
+            int nbMatch = stageModel.getNbMatch();
+            int nbCommon = stageModel.getNbCommon();
+            int yPos;
+            GameAction move;
+            Pawn pawn;
+            GridLook lookBoard = (GridLook) this.getElementLook(stageModel.getCheckBoard());
+            Point2D center;
+            ActionList actions = new ActionList(false);
+            int row = stageModel.getRowsCompleted() - 1;
+            for (yPos = 0; yPos < nbMatch; yPos++) {
+                pawn = stageModel.getColorPotLists().get(Pawn.Color.RED).get(row * MasterSettings.NB_COLS + yPos);
+                pawn.setVisible(true);
+                center = lookBoard.getRootPaneLocationForCellCenter(row, yPos);
+                move = new MoveAction(model, pawn, stageModel.getCheckBoard().getName(), row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
+                actions.addSingleAction(move);
+
+            }
+            for (; yPos < nbCommon + nbMatch; yPos++) {
+                pawn = stageModel.getColorPotLists().get(Pawn.Color.WHITE).get(row * MasterSettings.NB_COLS + yPos);
+                pawn.setVisible(true);
+                center = lookBoard.getRootPaneLocationForCellCenter(row, yPos);
+                move = new MoveAction(model, pawn, stageModel.getCheckBoard().getName(), row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
+                actions.addSingleAction(move);
+            }
+            ActionPlayer run = new ActionPlayer(model, this, actions);
+            run.start();
+            try  {
+                run.join(1000);
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
         }
     }
 
@@ -141,7 +185,7 @@ public class MasterController extends Controller {
                 gameStage.getCodeBoard().putElement(p, 0, i);
                 look = (GridLook) control.getElementLook(gameStage.getCodeBoard());
                 center = look.getRootPaneLocationForCellCenter(0, i);
-                move = new MoveAction(model, p, "codeboard", 0, i, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 1);
+                move = new MoveAction(model, p, "codeboard", 0, i, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
             } else {
                 look = (GridLook) control.getElementLook(gameStage.getBoard());
                 p = gameStage.getColorPotLists().get(color).get(gameStage.getRowsCompleted() * MasterSettings.NB_COLS + i);
@@ -149,7 +193,7 @@ public class MasterController extends Controller {
                 gameStage.getPawns().add(p);
                 gameStage.getBoard().putElement(p, row, i);
                 center = look.getRootPaneLocationForCellCenter(row, i);
-                move = new MoveAction(model, p, "masterboard", row, i, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 1);
+                move = new MoveAction(model, p, "masterboard", row, i, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
             }
             actions.addSingleAction(move);
         }

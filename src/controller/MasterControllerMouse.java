@@ -30,7 +30,7 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
         // get elements at that position
         List<GameElement> list = control.elementsAt(clic);
 
-        //System.out.println("click in "+event.getSceneX()+","+event.getSceneY());
+        System.out.println("click in "+event.getSceneX()+","+event.getSceneY());
         /*
         for(GameElement element : list) {
             System.out.println(element);
@@ -61,6 +61,10 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
                     stageModel.setState(MasterStageModel.STATE_SELECTPAWN);
                     return;
                 }
+                if (element.getType() == ElementTypes.getType("pawn") && stageModel.getColorsBoard().contains(element)) {
+                    stageModel.unselectAll();
+                    element.toggleSelected();
+                }
             }
             // secondly, search if the board has been clicked. If not just return
             boolean boardClicked = false;
@@ -78,7 +82,6 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
             } else {
                 board = stageModel.getBoard();
             }
-            //System.out.println(board + " " + stageModel.getCodeBoard());
             ColorsBoard pot = stageModel.getColorsBoard();
             GameElement pawn = model.getSelected().get(0);
 
@@ -87,7 +90,7 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
             int[] dest = lookBoard.getCellFromSceneLocation(clic);
             // get the cell in the pot that owns the selected pawn
             int[] from = pot.getElementCell(pawn);
-            //System.out.println("try to move pawn from pot " + from[0] + "," + from[1] + " to board " + dest[0] + "," + dest[1]);
+            System.out.println("try to move pawn from pot " + from[0] + "," + from[1] + " to board " + dest[0] + "," + dest[1]);
 
             // if the destination cell is valid for the selected pawn
             if (board.canReachCell(dest[0], dest[1])) {
@@ -104,7 +107,7 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
                     stageModel.getPawns().add(pawnToMove);
                 }
                 GameAction move;
-                move = new MoveAction(model, pawnToMove, board.getName(), dest[0], dest[1], AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 1);
+                move = new MoveAction(model, pawnToMove, board.getName(), dest[0], dest[1], AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
                 pawnToMove.setVisible(true);
                 // add the action to the action list.
                 if (model.getCurrentPlayer().getType() != Player.COMPUTER) {

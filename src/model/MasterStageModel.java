@@ -18,6 +18,9 @@ public class MasterStageModel extends GameStageModel {
     public final static int STATE_SELECTDEST = 2; // the player must select a destination
     public final static int PHASE_CODE = 1;
     public final static int PHASE_GAME = 2;
+    public final static int GAME_STATE_WIN = 1;
+    public final static int GAME_STATE_LOOSE = 2;
+    public final static int GAME_STATE_CONTINUE = 3;
 
     private MasterBoard board;
     private MasterBoard checkBoard;
@@ -37,6 +40,7 @@ public class MasterStageModel extends GameStageModel {
     public int turn;
     private TextElement playerName;
     private int phase;
+    private int gameState;
 
     /**
      * Constructs a new MasterStageModel with the given name and model.
@@ -57,6 +61,7 @@ public class MasterStageModel extends GameStageModel {
         turn = 0;
         state = STATE_SELECTPAWN;
         phase = PHASE_CODE;
+        gameState = GAME_STATE_CONTINUE;
         setupCallbacks();
     }
 
@@ -100,7 +105,6 @@ public class MasterStageModel extends GameStageModel {
                 int row = getRowsCompleted();
                 StringBuilder secretCombinationTmp = new StringBuilder(getSecretCombination());
                 StringBuilder pawnsTmp = new StringBuilder();
-                Pawn p;
 
                 for (Pawn pawn : pawns) {
                     pawnsTmp.append(pawn.getColor().name().charAt(0));
@@ -108,26 +112,14 @@ public class MasterStageModel extends GameStageModel {
                 pawnsTmp = new StringBuilder(pawnsTmp.substring(MasterSettings.NB_COLS * row, MasterSettings.NB_COLS * (row + 1)));
                 nbMatch = numberCorrectPawns(secretCombinationTmp, pawnsTmp);
                 nbCommon = numberCommonPawns(secretCombinationTmp, pawnsTmp);
-                for (yPos = 0; yPos < nbMatch; yPos++) {
-                    p = colorPotLists.get(Pawn.Color.RED).get(row * MasterSettings.NB_COLS + yPos);
-                    p.setVisible(true);
-                    checkBoard.putElement(p, row, yPos);
-                    Coord2D tempCoord = checkBoard.getElement(row, yPos).getLocation();
-                    checkBoard.getElement(row, yPos).setLocation(tempCoord.getX() - MasterSettings.CELL_SIZE, tempCoord.getY() - MasterSettings.CELL_SIZE);
-                }
-                for (; yPos < nbCommon + nbMatch; yPos++) {
-                    p = colorPotLists.get(Pawn.Color.WHITE).get(row * MasterSettings.NB_COLS + yPos);
-                    p.setVisible(true);
-                    checkBoard.putElement(p, row, yPos);
-                }
                 this.incrementRowsCompleted();
 
                 if (nbMatch == board.getNbCols()) {
                     // win
-                    computePartyResult(true);
+                    this.gameState = GAME_STATE_WIN;
                 } else if (rowsCompleted >= board.getNbRows() && nbMatch != board.getNbCols()) {
                     // loose
-                    computePartyResult(false);
+                    this.gameState = GAME_STATE_LOOSE;
                 }
             }
         });
@@ -439,6 +431,10 @@ public class MasterStageModel extends GameStageModel {
 
     public void setPhase(int phase) {
         this.phase = phase;
+    }
+
+    public int getGameState() {
+        return this.gameState;
     }
 
 }
