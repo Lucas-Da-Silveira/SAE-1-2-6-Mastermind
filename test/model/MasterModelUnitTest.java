@@ -37,10 +37,10 @@ public class MasterModelUnitTest {
 
         // used Mockito's spy method so that other functions in the class are initialized
         gameStage = Mockito.spy(new MasterStageModel("model.MasterStageModel", model));
-        board = Mockito.spy(new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage));
+        board = Mockito.spy(new MasterBoard("masterboard", 0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage));
         Mockito.when(gameStage.getBoard()).thenReturn(board);
 
-        checkBoard = new MasterBoard(0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage);
+        checkBoard = new MasterBoard("checkboard", 0, 0, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, gameStage);
 
         Pawn.adjustPawnColors();
         new MasterStageFactory(gameStage).setup();

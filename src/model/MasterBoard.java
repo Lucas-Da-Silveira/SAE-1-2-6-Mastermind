@@ -11,12 +11,12 @@ import static model.MasterSettings.NB_ROWS;
 
 public class MasterBoard extends GridElement {
 
-    public MasterBoard(int x, int y, int nbRows, int nbCols, GameStageModel gameStageModel) {
-        super("masterboard", x, y, nbRows, nbCols, gameStageModel);
+    public MasterBoard(String name, int x, int y, int nbRows, int nbCols, GameStageModel gameStageModel) {
+        super(name, x, y, nbRows, nbCols, gameStageModel);
     }
     
-    public MasterBoard(int x, int y, GameStageModel gameStageModel) {
-        super("masterboard", x, y, NB_ROWS, NB_COLS, gameStageModel);
+    public MasterBoard(String name,int x, int y, GameStageModel gameStageModel) {
+        super(name, x, y, NB_ROWS, NB_COLS, gameStageModel);
     }
 
     public void setValidCells(int currentRow) {

@@ -34,9 +34,12 @@ public class MasterDecider extends Decider {
     @Override
     public ActionList decide() {
         MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
-        MasterBoard board = gameStage.getBoard();
-        String randomLine = generateLine(gameStage, MasterSettings.AI_MODE);
-
+        String randomLine;
+        if (gameStage.getPhase() == MasterStageModel.PHASE_CODE) {
+            randomLine = generateLine(gameStage, 3);
+        } else {
+            randomLine = generateLine(gameStage, MasterSettings.AI_MODE);
+        }
         return MasterController.createActions(randomLine, gameStage, model, (MasterController) control);
     }
 

@@ -35,15 +35,15 @@ public class MasterStageView extends GameStageView {
         addLook(new CheckBoardLook(MasterSettings.CELL_SIZE * MasterSettings.NB_ROWS, model.getCheckBoard()));
         addLook(new PawnPotLook(MasterSettings.CELL_SIZE * 2 * MasterSettings.NB_COLORS, MasterSettings.CELL_SIZE * 2, model.getColorsBoard()));
         addLook(new MasterBoardLook(400, model.getColorPot()));
+        addLook(new CodeBoardLook(MasterSettings.CELL_SIZE * 2 * MasterSettings.NB_COLS, MasterSettings.CELL_SIZE * 2, model.getCodeBoard()));
 
         model.getColorPawns().forEach((key, value) -> {
-                addLook(new PawnLook(MasterSettings.CELL_SIZE/2, (Pawn) value));
-                // System.out.println(color + " (" + color.name().charAt(0) +")");
+                addLook(new PawnLook(MasterSettings.CELL_SIZE/3, (Pawn) value));
         });
 
         model.getColorPotLists().forEach((color, list) -> {
             list.forEach(p -> {
-                addLook(new PawnLook(MasterSettings.CELL_SIZE/2, p));
+                addLook(new PawnLook(MasterSettings.CELL_SIZE/3, p));
             });
         });
 

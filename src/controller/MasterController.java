@@ -26,7 +26,6 @@ public class MasterController extends Controller {
         super(model, view);
         setControlMouse(new MasterControllerMouse(model, view, this));
         setControlAction(new MasterControllerAction(model, view, this));
-
     }
 
     /**
@@ -82,11 +81,9 @@ public class MasterController extends Controller {
 
     public void nextPlayer() {
         // use the default method to compute next player
-        if ((((MasterStageModel)model.getGameStage()).getPawns().size()%MasterSettings.NB_COLS != 0)) {
-            return;
-        }
-        if (((MasterStageModel)model.getGameStage()).getPhase() == MasterStageModel.PHASE_CODE) {
+        if (((MasterStageModel)model.getGameStage()).getPhase() == MasterStageModel.PHASE_CODE && ((MasterStageModel)model.getGameStage()).getSecretCombination().length() == MasterSettings.NB_COLS) {
             model.setNextPlayer();
+            ((MasterStageModel) model.getGameStage()).setPhase(MasterStageModel.PHASE_GAME);
         }
 
         // get the new player
@@ -131,20 +128,29 @@ public class MasterController extends Controller {
      */
     public static ActionList createActions(String line, MasterStageModel gameStage, Model model, MasterController control) {
         ActionList actions = new ActionList(true);
-
         for (int i = 0; i < line.length(); i++) {
             Pawn.Color color = Pawn.inputColor.get(line.charAt(i));
             int row = gameStage.getRowsCompleted();
-
-            Pawn p = gameStage.getColorPotLists().get(color).get(gameStage.getRowsCompleted() * MasterSettings.NB_COLS + i);
-            p.setVisible(true);
-
-            gameStage.getBoard().putElement(p, row, i);
-
-            GridLook look = (GridLook) control.getElementLook(gameStage.getBoard());
-            Point2D center = look.getRootPaneLocationForCellCenter(row, i);
-            GameAction move = new MoveAction(model, p, "masterboard", row, i, AnimationTypes.MOVELINEARPROP_NAME, center.getX(), center.getY(), 10);
-
+            Pawn p;
+            GridLook look;
+            Point2D center;
+            GameAction move;
+            if (gameStage.getPhase() == MasterStageModel.PHASE_CODE) {
+                p = gameStage.getColorPotLists().get(color).get(MasterSettings.NB_ROWS * MasterSettings.NB_COLS + i);
+                p.setVisible(true);
+                gameStage.getCodeBoard().putElement(p, 0, i);
+                look = (GridLook) control.getElementLook(gameStage.getCodeBoard());
+                center = look.getRootPaneLocationForCellCenter(0, i);
+                move = new MoveAction(model, p, "codeboard", 0, i, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 1);
+            } else {
+                look = (GridLook) control.getElementLook(gameStage.getBoard());
+                p = gameStage.getColorPotLists().get(color).get(gameStage.getRowsCompleted() * MasterSettings.NB_COLS + i);
+                p.setVisible(true);
+                gameStage.getPawns().add(p);
+                gameStage.getBoard().putElement(p, row, i);
+                center = look.getRootPaneLocationForCellCenter(row, i);
+                move = new MoveAction(model, p, "masterboard", row, i, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 1);
+            }
             actions.addSingleAction(move);
         }
 

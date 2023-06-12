@@ -24,7 +24,6 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
     }
 
     public void handle(MouseEvent event) {
-        if (model.getCurrentPlayer().getType() == Player.COMPUTER) { return; }
         if (!model.isCaptureMouseEvent()) return;
         // get the clic x,y in the whole scene (this includes the menu bar if it exists)
         Point2D clic = new Point2D(event.getSceneX(), event.getSceneY());
@@ -32,6 +31,7 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
         List<GameElement> list = control.elementsAt(clic);
 
         //System.out.println("click in "+event.getSceneX()+","+event.getSceneY());
+        /*
         for(GameElement element : list) {
             System.out.println(element);
             if(element instanceof Pawn) {
@@ -39,9 +39,9 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
                 System.out.println(model.getGameStage().getState());
             }
         }
+        */
 
         MasterStageModel stageModel = (MasterStageModel) model.getGameStage();
-
         if (stageModel.getState() == MasterStageModel.STATE_SELECTPAWN) {
             for (GameElement element : list) {
                 if (element.getType() == ElementTypes.getType("pawn")) {
@@ -65,14 +65,20 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
             // secondly, search if the board has been clicked. If not just return
             boolean boardClicked = false;
             for (GameElement element : list) {
-                if (element == stageModel.getBoard()) {
+                if ((element == stageModel.getBoard() && stageModel.getPhase() == MasterStageModel.PHASE_GAME) || (element == stageModel.getCodeBoard() && stageModel.getPhase() == MasterStageModel.PHASE_CODE)) {
                     boardClicked = true;
                     break;
                 }
             }
             if (!boardClicked) return;
             // get the board, pot,  and the selected pawn to simplify code in the following
-            MasterBoard board = stageModel.getBoard();
+            MasterBoard board;
+            if (stageModel.getPhase() == MasterStageModel.PHASE_CODE) {
+                board = stageModel.getCodeBoard();
+            } else {
+                board = stageModel.getBoard();
+            }
+            //System.out.println(board + " " + stageModel.getCodeBoard());
             ColorsBoard pot = stageModel.getColorsBoard();
             GameElement pawn = model.getSelected().get(0);
 
@@ -81,7 +87,7 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
             int[] dest = lookBoard.getCellFromSceneLocation(clic);
             // get the cell in the pot that owns the selected pawn
             int[] from = pot.getElementCell(pawn);
-            System.out.println("try to move pawn from pot " + from[0] + "," + from[1] + " to board " + dest[0] + "," + dest[1]);
+            //System.out.println("try to move pawn from pot " + from[0] + "," + from[1] + " to board " + dest[0] + "," + dest[1]);
 
             // if the destination cell is valid for the selected pawn
             if (board.canReachCell(dest[0], dest[1])) {
@@ -90,11 +96,20 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
                 // determine the destination point in the root pane
                 Point2D center = lookBoard.getRootPaneLocationForCellCenter(dest[0], dest[1]);
                 // create an action with a linear move animation, with 10 pixel/frame
-                Pawn pawnToMove = stageModel.getColorPotLists().get(((Pawn)pawn).getColor()).get(dest[0] * MasterSettings.NB_COLS + dest[1]);
-                GameAction move = new MoveAction(model, pawnToMove, "masterboard", dest[0], dest[1], AnimationTypes.MOVELINEARPROP_NAME, center.getX(), center.getY(), 10);
+                Pawn pawnToMove;
+                if (stageModel.getPhase() == MasterStageModel.PHASE_CODE) {
+                    pawnToMove = stageModel.getColorPotLists().get(((Pawn)pawn).getColor()).get(MasterSettings.NB_ROWS * MasterSettings.NB_COLS + dest[1]);
+                } else {
+                    pawnToMove = stageModel.getColorPotLists().get(((Pawn)pawn).getColor()).get(dest[0] * MasterSettings.NB_COLS + dest[1]);
+                    stageModel.getPawns().add(pawnToMove);
+                }
+                GameAction move;
+                move = new MoveAction(model, pawnToMove, board.getName(), dest[0], dest[1], AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 1);
                 pawnToMove.setVisible(true);
                 // add the action to the action list.
-                actions.addSingleAction(move);
+                if (model.getCurrentPlayer().getType() != Player.COMPUTER) {
+                    actions.addSingleAction(move);
+                }
                 stageModel.unselectAll();
                 stageModel.setState(MasterStageModel.STATE_SELECTPAWN);
                 ActionPlayer play = new ActionPlayer(model, control, actions);

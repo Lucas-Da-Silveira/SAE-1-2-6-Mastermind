@@ -2,10 +2,7 @@ package model;
 
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
-import boardifier.model.GameStageModel;
-import boardifier.model.Model;
-import boardifier.model.StageElementsFactory;
-import boardifier.model.TextElement;
+import boardifier.model.*;
 import boardifier.model.action.ActionList;
 import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
@@ -13,10 +10,7 @@ import boardifier.model.animation.AnimationTypes;
 import boardifier.view.GridLook;
 import javafx.geometry.Point2D;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MasterStageModel extends GameStageModel {
     // states
@@ -29,6 +23,7 @@ public class MasterStageModel extends GameStageModel {
     private MasterBoard checkBoard;
     private ColorsBoard colors;
     private MasterBoard colorPot;
+    private MasterBoard codeBoard;
     private String secretCombination;
     private int rowsCompleted;
     private ArrayList<Pawn> pawns;
@@ -72,7 +67,6 @@ public class MasterStageModel extends GameStageModel {
      */
     public void setupCallbacks() {
         onSelectionChange(() -> {
-            System.out.println("Change");
             if (selected.size() == 0) {
                 board.resetReachableCells(false);
                 return;
@@ -82,13 +76,25 @@ public class MasterStageModel extends GameStageModel {
         });
 
         onPutInGrid((element, gridDest, rowDest, colDest) -> {
-            if (gridDest != board && gridDest != checkBoard) return;
+            if (gridDest != board && gridDest != checkBoard && gridDest != codeBoard) return;
+            if (this.phase == MasterStageModel.PHASE_CODE) {
+                this.secretCombination = this.secretCombination + ((Pawn)element).getColor().name().charAt(0);
+                if (secretCombination.length() == MasterSettings.NB_COLS) {
+                    this.board.setVisible(true);
+                    this.checkBoard.setVisible(true);
+                    this.codeBoard.setVisible(false);
+                    Arrays.stream(Pawn.Color.values()).forEach(c -> {
+                        this.colorPotLists.get(c).stream().filter(GameElement::isVisible).forEach(p -> p.setVisible(false));
+                    });
+                }
+                return;
+            }
             if (((Pawn)element).isInCheckBoard() && gridDest == checkBoard) {
                 checkPawns.add((Pawn)element);
                 return;
             }
-            pawns.add((Pawn)element);
-            if (pawns.size() % board.getNbCols() == 0) {
+
+            if (pawns.size() % board.getNbCols() == 0 && !pawns.isEmpty()) {
 
                 int yPos = 0;
                 int row = getRowsCompleted();
@@ -99,25 +105,22 @@ public class MasterStageModel extends GameStageModel {
                 for (Pawn pawn : pawns) {
                     pawnsTmp.append(pawn.getColor().name().charAt(0));
                 }
-
                 pawnsTmp = new StringBuilder(pawnsTmp.substring(MasterSettings.NB_COLS * row, MasterSettings.NB_COLS * (row + 1)));
                 nbMatch = numberCorrectPawns(secretCombinationTmp, pawnsTmp);
                 nbCommon = numberCommonPawns(secretCombinationTmp, pawnsTmp);
-                System.out.println(this.secretCombination);
                 for (yPos = 0; yPos < nbMatch; yPos++) {
                     p = colorPotLists.get(Pawn.Color.RED).get(row * MasterSettings.NB_COLS + yPos);
                     p.setVisible(true);
                     checkBoard.putElement(p, row, yPos);
+                    Coord2D tempCoord = checkBoard.getElement(row, yPos).getLocation();
+                    checkBoard.getElement(row, yPos).setLocation(tempCoord.getX() - MasterSettings.CELL_SIZE, tempCoord.getY() - MasterSettings.CELL_SIZE);
                 }
-
                 for (; yPos < nbCommon + nbMatch; yPos++) {
                     p = colorPotLists.get(Pawn.Color.WHITE).get(row * MasterSettings.NB_COLS + yPos);
                     p.setVisible(true);
                     checkBoard.putElement(p, row, yPos);
                 }
-
                 this.incrementRowsCompleted();
-
 
                 if (nbMatch == board.getNbCols()) {
                     // win
@@ -216,6 +219,15 @@ public class MasterStageModel extends GameStageModel {
     public void setCheckBoard(MasterBoard _checkBoard) {
         this.checkBoard = _checkBoard;
         addGrid(this.checkBoard);
+    }
+
+    public MasterBoard getCodeBoard() {
+        return this.codeBoard;
+    }
+
+    public void setCodeBoard(MasterBoard codeBoard) {
+        this.codeBoard = codeBoard;
+        addGrid(this.codeBoard);
     }
 
     /**
@@ -423,6 +435,10 @@ public class MasterStageModel extends GameStageModel {
 
     public int getPhase() {
         return this.phase;
+    }
+
+    public void setPhase(int phase) {
+        this.phase = phase;
     }
 
 }
