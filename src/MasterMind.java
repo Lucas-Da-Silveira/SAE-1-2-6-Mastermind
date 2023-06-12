@@ -77,5 +77,7 @@ public class MasterMind extends Application {
         stage.setTitle("Mastermind");
         // show the JavaFx main stage
         stage.show();
+
+        view.resetView();
     }
 }
