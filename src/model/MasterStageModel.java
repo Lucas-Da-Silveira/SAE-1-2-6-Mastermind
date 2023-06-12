@@ -68,7 +68,6 @@ public class MasterStageModel extends GameStageModel {
     /**
      * Sets up the callbacks for the stage with the given controller.
      *
-     * @param control The controller associated with the stage.
      */
     public void setupCallbacks() {
         onSelectionChange(() -> {
@@ -132,6 +131,11 @@ public class MasterStageModel extends GameStageModel {
      */
     public void computePartyResult(boolean win) {
         model.setIdWinner(win ? 1 : 0);
+        this.getPlayerName().setText(win ? "You win !" : "Too bad, you loose");
+        board.setVisible(false);
+        checkBoard.setVisible(false);
+        checkPawns.forEach(p -> p.setVisible(false));
+        pawns.forEach(p -> p.setVisible(false));
         model.stopStage();
     }
 
