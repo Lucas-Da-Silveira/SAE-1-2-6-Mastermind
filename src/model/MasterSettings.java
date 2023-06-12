@@ -1,6 +1,7 @@
 package model;
 
 public class MasterSettings {
+    public static int MODE = 0; // default : human vs human
     public static int NB_COLORS = 4;
     public static int NB_ROWS = 12;
     public static int NB_COLS = 4;

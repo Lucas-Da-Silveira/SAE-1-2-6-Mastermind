@@ -1,5 +1,6 @@
 package view;
 
+import boardifier.model.Model;
 import boardifier.view.RootPane;
 import controller.MasterSettingsController;
 import javafx.collections.FXCollections;
@@ -14,15 +15,21 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import model.MasterSettings;
 
+import static model.MasterSettings.MODE;
+
 public class MasterRootPane extends RootPane {
     private Spinner rowsNumber;
     private Spinner colsNumber;
     private Spinner colorsNumber;
     private ComboBox AIComboBox;
+    private ComboBox modeComboBox;
     private Button btn;
 
-    public MasterRootPane() {
+    private Model model;
+
+    public MasterRootPane(Model _model) {
         super();
+        model = _model;
     }
 
     @Override
@@ -56,10 +63,15 @@ public class MasterRootPane extends RootPane {
         fields.add(new Label("Number of colors:"), 0, 2);
         fields.add(colorsNumber, 1, 2);
 
+        modeComboBox = new ComboBox<>(FXCollections.observableArrayList("Human vs human", "Computer vs player", "Computer vs computer"));
+        modeComboBox.getSelectionModel().select(MODE);
+        fields.add(new Label("Mode:"), 0, 3);
+        fields.add(modeComboBox, 1, 3);
+
         AIComboBox = new ComboBox(FXCollections.observableArrayList("First AI", "Second AI", "AI plays randomly"));
         AIComboBox.getSelectionModel().select(MasterSettings.AI_MODE);
-        fields.add(new Label("AI choice:"), 0, 3);
-        fields.add(AIComboBox, 1, 3);
+        fields.add(new Label("AI choice:"), 0, 4);
+        fields.add(AIComboBox, 1, 4);
 
         btn = new Button("Validate");
         btn.setPrefWidth(80);
@@ -67,7 +79,7 @@ public class MasterRootPane extends RootPane {
 
         root.getChildren().addAll(fields, btn);
 
-        MasterSettingsController settingsController = new MasterSettingsController(this);
+        MasterSettingsController settingsController = new MasterSettingsController(this, model);
         settingsController.addEvents();
 
         // put shapes in the group
@@ -85,6 +97,10 @@ public class MasterRootPane extends RootPane {
 
     public Spinner getColorsNumber() {
         return colorsNumber;
+    }
+
+    public ComboBox getModeComboBox() {
+        return modeComboBox;
     }
 
     public ComboBox getAIComboBox() {

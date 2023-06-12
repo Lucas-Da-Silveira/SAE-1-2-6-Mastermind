@@ -2,7 +2,6 @@ import boardifier.control.StageFactory;
 import boardifier.model.Model;
 import boardifier.view.View;
 import controller.MasterController;
-import boardifier.model.GameException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.MasterSettings;
@@ -13,15 +12,15 @@ import view.MasterView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MasterMind extends Application {
-    private static int mode;
+import static model.MasterSettings.MODE;
 
+public class MasterMind extends Application {
     public static void main(String[] args) {
         try {
-            mode = Integer.parseInt(args[0]);
-            if ((mode < 0) || (mode > 2)) mode = 0;
+            MODE = Integer.parseInt(args[0]);
+            if ((MODE < 0) || (MODE > 2)) MODE = 0;
         } catch (NumberFormatException ignored) {
-            mode = 0;
+            MODE = 0;
         }
 
         String pattern = "--(colors|rows|cols|aimode)=(\\d+)";
@@ -52,13 +51,13 @@ public class MasterMind extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Model model = new Model();
-        if (mode == 0) {
+        if (MODE == 0) {
             model.addHumanPlayer("player1");
             model.addHumanPlayer("player2");
-        } else if (mode == 1) {
+        } else if (MODE == 1) {
             model.addComputerPlayer("computer");
             model.addHumanPlayer("player");
-        } else if (mode == 2) {
+        } else if (MODE == 2) {
             model.addComputerPlayer("computer1");
             model.addComputerPlayer("computer2");
         }
@@ -66,7 +65,7 @@ public class MasterMind extends Application {
         // register a single stage for the game
         StageFactory.registerModelAndView("master", "model.MasterStageModel", "view.MasterStageView");
         // create the root pane, using the subclass HoleRootPane
-        MasterRootPane rootPane = new MasterRootPane();
+        MasterRootPane rootPane = new MasterRootPane(model);
         // create the global view
         View view = new MasterView(model, stage, rootPane);
         // create the controllers
