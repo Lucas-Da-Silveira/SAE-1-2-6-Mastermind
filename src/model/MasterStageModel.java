@@ -131,7 +131,7 @@ public class MasterStageModel extends GameStageModel {
      */
     public void computePartyResult(boolean win) {
         model.setIdWinner(win ? 1 : 0);
-        this.getPlayerName().setText(win ? "You win !" : "Too bad, you loose");
+        this.getPlayerName().setText(model.getPlayers().get(model.getIdWinner()).getName() + " wins");
         board.setVisible(false);
         checkBoard.setVisible(false);
         checkPawns.forEach(p -> p.setVisible(false));
