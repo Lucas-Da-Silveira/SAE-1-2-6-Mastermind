@@ -112,33 +112,28 @@ public class MasterController extends Controller {
             int nbMatch = stageModel.getNbMatch();
             int nbCommon = stageModel.getNbCommon();
             int yPos;
-            GameAction move;
             Pawn pawn;
             GridLook lookBoard = (GridLook) this.getElementLook(stageModel.getCheckBoard());
             Point2D center;
-            ActionList actions = new ActionList(false);
             int row = stageModel.getRowsCompleted() - 1;
             for (yPos = 0; yPos < nbMatch; yPos++) {
                 pawn = stageModel.getColorPotLists().get(Pawn.Color.RED).get(row * MasterSettings.NB_COLS + yPos);
                 pawn.setVisible(true);
                 center = lookBoard.getRootPaneLocationForCellCenter(row, yPos);
-                move = new MoveAction(model, pawn, stageModel.getCheckBoard().getName(), row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
-                actions.addSingleAction(move);
+                stageModel.getCheckBoard().putElement(pawn, row, yPos, false);
+                pawn.setLocation(center.getX()-MasterSettings.CELL_SIZE/3, center.getY()-MasterSettings.CELL_SIZE/3);
+                //move = new MoveAction(model, pawn, stageModel.getCheckBoard().getName(), row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
+                //actions.addSingleAction(move);
 
             }
             for (; yPos < nbCommon + nbMatch; yPos++) {
                 pawn = stageModel.getColorPotLists().get(Pawn.Color.WHITE).get(row * MasterSettings.NB_COLS + yPos);
                 pawn.setVisible(true);
                 center = lookBoard.getRootPaneLocationForCellCenter(row, yPos);
-                move = new MoveAction(model, pawn, stageModel.getCheckBoard().getName(), row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
-                actions.addSingleAction(move);
-            }
-            ActionPlayer run = new ActionPlayer(model, this, actions);
-            run.start();
-            try  {
-                run.join(1000);
-            } catch (InterruptedException e) {
-                System.out.println(e);
+                stageModel.getCheckBoard().putElement(pawn, row, yPos, false);
+                pawn.setLocation(center.getX()-MasterSettings.CELL_SIZE/3, center.getY()-MasterSettings.CELL_SIZE/3);
+                //move = new MoveAction(model, pawn, stageModel.getCheckBoard().getName(), row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
+                //actions.addSingleAction(move);
             }
         }
     }

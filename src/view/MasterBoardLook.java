@@ -37,9 +37,9 @@ public class MasterBoardLook extends GridLook {
     public void onChange() {
         MasterBoard board = (MasterBoard) element;
         boolean[][] reach = board.getReachableCells();
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (reach[i][j]) {
+        for (int i = 0; i < MasterSettings.NB_ROWS; i++) {
+            for (int j = 0; j < MasterSettings.NB_COLS; j++) {
+                if (i < reach.length && reach[i][j]) {
                     cells[i][j].setStrokeWidth(3);
                     cells[i][j].setStrokeMiterLimit(10);
                     cells[i][j].setStrokeType(StrokeType.CENTERED);
