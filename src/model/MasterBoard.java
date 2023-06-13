@@ -34,7 +34,10 @@ public class MasterBoard extends GridElement {
         ArrayList<Point> result = new ArrayList<>();
 
         for (int i = 0; i < NB_COLS; i++) {
-            result.add(new Point(i, currentRow));
+            if(this.getElement(currentRow, i) == null) {
+                result.add(new Point(i, currentRow));
+                break;
+            }
         }
 
         return result;
