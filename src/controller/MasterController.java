@@ -28,57 +28,6 @@ public class MasterController extends Controller {
         setControlAction(new MasterControllerAction(model, view, this));
     }
 
-    /**
-     * Executes the main loop of the game stage.
-     * Reads input from the system console.
-     * This method overrides the stageLoop() method from the superclass.
-     */
-    /* @Override
-    public void stageLoop() {
-        stageLoop(new BufferedReader(new InputStreamReader(System.in)));
-    } */
-
-    /**
-     * Executes the main loop of the game stage.
-     *
-     * @param consoleIn The BufferedReader object to read input from the console.
-     */
-    /* public void stageLoop(BufferedReader consoleIn) {
-        MasterStageModel gameStage = (MasterStageModel) model.getGameStage();
-
-        new Thread(() -> gameStage.setupCallbacks(this)).start();
-
-        String line = "";
-        if (model.getCurrentPlayer().getType() == Player.COMPUTER) {
-            line = MasterDecider.generateRandomLine(gameStage);
-            System.out.println(model.getCurrentPlayer().getName() + " chose the colors");
-        } else {
-            boolean ok = false;
-            while (!ok) {
-                try {
-                    System.out.print(model.getCurrentPlayer().getName() + ", choose the colors : ");
-                    line = consoleIn.readLine().toUpperCase();
-                    ok = verifyLine(line, gameStage);
-                    if (!ok) {
-                        System.out.println("incorrect instruction. retry !");
-                    }
-                } catch (IOException ignored) {}
-            }
-        }
-
-        gameStage.setSecretCombination(line);
-
-        model.setNextPlayer();
-
-        update();
-        while (!model.isEndStage()) {
-            nextPlayer(new MasterDecider(model, this), consoleIn);
-            update();
-        }
-        stopStage();
-        endGame();
-    } */
-
     public void nextPlayer() {
         // use the default method to compute next player
         MasterStageModel stageModel = (MasterStageModel)model.getGameStage();
@@ -136,25 +85,6 @@ public class MasterController extends Controller {
                 //actions.addSingleAction(move);
             }
         }
-    }
-
-    /**
-     * Analyzes the input line and plays the corresponding actions if the line is valid.
-     *
-     * @param line       The input line to analyze.
-     * @param gameStage  The MasterStageModel object representing the game stage.
-     * @param _model     The Model object representing the game model.
-     * @return True if the line is valid and the actions are played successfully, False otherwise.
-     */
-    public boolean analyseAndPlay(String line, MasterStageModel gameStage, Model _model) {
-        if (!verifyLine(line, gameStage)) return false;
-
-        ActionList actions = createActions(line, gameStage, _model, this);
-
-        ActionPlayer play = new ActionPlayer(_model, this, actions);
-        play.start();
-
-        return true;
     }
 
     /**
