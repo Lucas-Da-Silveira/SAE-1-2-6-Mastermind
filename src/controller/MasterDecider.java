@@ -2,14 +2,8 @@ package controller;
 
 import boardifier.control.Controller;
 import boardifier.control.Decider;
-import boardifier.model.Coord2D;
 import boardifier.model.Model;
 import boardifier.model.action.ActionList;
-import boardifier.model.action.GameAction;
-import boardifier.model.action.MoveAction;
-import boardifier.model.animation.AnimationTypes;
-import boardifier.view.GridLook;
-import model.MasterBoard;
 import model.MasterSettings;
 import model.MasterStageModel;
 import model.Pawn;
@@ -93,14 +87,14 @@ public class MasterDecider extends Decider {
     public String firstIAStrategy(MasterStageModel gameStage) {
         String result;
 
-        if(gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
+        if (gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
             gameStage.answer.addAll(Collections.nCopies(gameStage.getNbMatch() + gameStage.getNbCommon(), this.possibleInput.get(gameStage.getRowsCompleted() - 1)));
-            if(gameStage.answer.size() == MasterSettings.NB_COLS) {
+            if (gameStage.answer.size() == MasterSettings.NB_COLS) {
                 gameStage.turn = 0;
             }
         }
 
-        if(numberCorrectColor(gameStage) != MasterSettings.NB_COLS && gameStage.getRowsCompleted() < MasterSettings.NB_COLORS) {
+        if (numberCorrectColor(gameStage) != MasterSettings.NB_COLS && gameStage.getRowsCompleted() < MasterSettings.NB_COLORS) {
             result = this.possibleInput.get(gameStage.getRowsCompleted()).toString().repeat(MasterSettings.NB_COLS);
         } else {
             StringBuilder test = new StringBuilder();
@@ -126,7 +120,7 @@ public class MasterDecider extends Decider {
         StringBuilder temp = new StringBuilder();
         int randomIndex;
 
-        if(gameStage.getRowsCompleted() == 0) {
+        if (gameStage.getRowsCompleted() == 0) {
             gameStage.possibleAnswer = getAllPossibilities(this.possibleInput, MasterSettings.NB_COLS);
             randomIndex = rand.nextInt(gameStage.possibleAnswer.size());
             for (int i = 0; i < gameStage.possibleAnswer.get(randomIndex).length(); i++) {
@@ -176,7 +170,7 @@ public class MasterDecider extends Decider {
      * Generates all possible combinations of characters from the given list of possible characters.
      *
      * @param possibleCharacters The list of possible characters.
-     * @param size              The size of the combinations to generate.
+     * @param size               The size of the combinations to generate.
      * @return A list of all possible combinations.
      */
     public List<String> getAllPossibilities(List<Character> possibleCharacters, int size) {
@@ -188,10 +182,10 @@ public class MasterDecider extends Decider {
     /**
      * Recursively generates all possible combinations of characters from the given list of possible characters.
      *
-     * @param list              The list to store the generated combinations.
+     * @param list               The list to store the generated combinations.
      * @param possibleCharacters The list of possible characters.
-     * @param str               The current combination being constructed.
-     * @param size              The remaining size of the combinations to generate.
+     * @param str                The current combination being constructed.
+     * @param size               The remaining size of the combinations to generate.
      */
     public void generatePossibility(List<String> list, List<Character> possibleCharacters, String str, int size) {
         if (size == 0) {

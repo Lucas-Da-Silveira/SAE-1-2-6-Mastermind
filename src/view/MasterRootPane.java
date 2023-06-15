@@ -115,6 +115,7 @@ public class MasterRootPane extends RootPane {
 
     /**
      * Add the controller inside this object, in order to call start a new game directly when validate button is clicked
+     *
      * @param _controller the controller
      */
     public void addController(MasterController _controller) {

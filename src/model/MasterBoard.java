@@ -14,8 +14,8 @@ public class MasterBoard extends GridElement {
     public MasterBoard(String name, int x, int y, int nbRows, int nbCols, GameStageModel gameStageModel) {
         super(name, x, y, nbRows, nbCols, gameStageModel);
     }
-    
-    public MasterBoard(String name,int x, int y, GameStageModel gameStageModel) {
+
+    public MasterBoard(String name, int x, int y, GameStageModel gameStageModel) {
         super(name, x, y, NB_ROWS, NB_COLS, gameStageModel);
     }
 
@@ -34,7 +34,7 @@ public class MasterBoard extends GridElement {
         ArrayList<Point> result = new ArrayList<>();
 
         for (int i = 0; i < NB_COLS; i++) {
-            if(this.getElement(currentRow, i) == null) {
+            if (this.getElement(currentRow, i) == null) {
                 result.add(new Point(i, currentRow));
                 break;
             }

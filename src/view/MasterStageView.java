@@ -3,7 +3,6 @@ package view;
 import boardifier.model.GameException;
 import boardifier.model.GameStageModel;
 import boardifier.view.GameStageView;
-import boardifier.view.GridLook;
 import boardifier.view.TextLook;
 import model.MasterSettings;
 import model.MasterStageModel;
@@ -38,12 +37,12 @@ public class MasterStageView extends GameStageView {
         addLook(new CodeBoardLook(MasterSettings.CELL_SIZE * 2 * MasterSettings.NB_COLS, MasterSettings.CELL_SIZE * 2, model.getCodeBoard()));
 
         model.getColorPawns().forEach((key, value) -> {
-                addLook(new PawnLook(MasterSettings.CELL_SIZE/3, (Pawn) value));
+            addLook(new PawnLook(MasterSettings.CELL_SIZE / 3, (Pawn) value));
         });
 
         model.getColorPotLists().forEach((color, list) -> {
             list.forEach(p -> {
-                addLook(new PawnLook(MasterSettings.CELL_SIZE/3, p));
+                addLook(new PawnLook(MasterSettings.CELL_SIZE / 3, p));
             });
         });
 

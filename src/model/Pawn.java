@@ -30,6 +30,7 @@ public class Pawn extends GameElement {
      * Map that maps characters to pawn colors for user input.
      */
     public static Map<Character, Color> inputColor;
+
     static {
         initInputColor();
     }
@@ -49,14 +50,14 @@ public class Pawn extends GameElement {
     /**
      * Constructor for creating a Pawn object.
      *
-     * @param color            The color of the pawn.
-     * @param row              The row position of the pawn.
-     * @param col              The column position of the pawn.
-     * @param gameStageModel   The game stage model associated with the pawn.
+     * @param color          The color of the pawn.
+     * @param row            The row position of the pawn.
+     * @param col            The column position of the pawn.
+     * @param gameStageModel The game stage model associated with the pawn.
      */
     public Pawn(Color color, int row, int col, GameStageModel gameStageModel) {
         super(gameStageModel);
-        ElementTypes.register("pawn",50);
+        ElementTypes.register("pawn", 50);
         type = ElementTypes.getType("pawn");
 
         this.color = color;
@@ -86,8 +87,7 @@ public class Pawn extends GameElement {
             AnimationStep step = animation.next();
             if (step != null) {
                 setLocation(step.getInt(0), step.getInt(1));
-            }
-            else {
+            } else {
                 animation = null;
             }
         }

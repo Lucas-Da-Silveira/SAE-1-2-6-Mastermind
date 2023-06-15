@@ -13,7 +13,7 @@ public class PawnPotLook extends GridLook {
     private Rectangle[] cells;
 
     public PawnPotLook(int width, int height, GameElement element) {
-        super(width, height, (width - 20)/MasterSettings.NB_COLORS, MasterSettings.CELL_SIZE * 2 - 20, 10, "0X000000", element);
+        super(width, height, (width - 20) / MasterSettings.NB_COLORS, MasterSettings.CELL_SIZE * 2 - 20, 10, "0X000000", element);
         cells = new Rectangle[MasterSettings.NB_COLORS];
 
         for (int i = 0; i < cells.length; i++) {

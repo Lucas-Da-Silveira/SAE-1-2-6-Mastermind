@@ -3,16 +3,19 @@ package controller;
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
 import boardifier.control.ControllerMouse;
-import boardifier.model.*;
+import boardifier.model.ElementTypes;
+import boardifier.model.GameElement;
+import boardifier.model.Model;
+import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
 import boardifier.model.animation.AnimationTypes;
 import boardifier.view.GridLook;
 import boardifier.view.View;
-import javafx.event.*;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.input.*;
+import javafx.scene.input.MouseEvent;
 import model.*;
 
 import java.util.List;
@@ -31,7 +34,7 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
         // get elements at that position
         List<GameElement> list = control.elementsAt(clic);
 
-        System.out.println("click in "+event.getSceneX()+","+event.getSceneY());
+        System.out.println("click in " + event.getSceneX() + "," + event.getSceneY());
 
         MasterStageModel stageModel = (MasterStageModel) model.getGameStage();
         if (stageModel.getState() == MasterStageModel.STATE_SELECTPAWN) {
@@ -93,9 +96,9 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
                 // create an action with a linear move animation, with 10 pixel/frame
                 Pawn pawnToMove;
                 if (stageModel.getPhase() == MasterStageModel.PHASE_CODE) {
-                    pawnToMove = stageModel.getColorPotLists().get(((Pawn)pawn).getColor()).get(MasterSettings.NB_ROWS * MasterSettings.NB_COLS + dest[1]);
+                    pawnToMove = stageModel.getColorPotLists().get(((Pawn) pawn).getColor()).get(MasterSettings.NB_ROWS * MasterSettings.NB_COLS + dest[1]);
                 } else {
-                    pawnToMove = stageModel.getColorPotLists().get(((Pawn)pawn).getColor()).get(dest[0] * MasterSettings.NB_COLS + dest[1]);
+                    pawnToMove = stageModel.getColorPotLists().get(((Pawn) pawn).getColor()).get(dest[0] * MasterSettings.NB_COLS + dest[1]);
                     stageModel.getPawns().add(pawnToMove);
                 }
                 GameAction move;

@@ -1,14 +1,6 @@
 package model;
 
-import boardifier.control.ActionPlayer;
-import boardifier.control.Controller;
 import boardifier.model.*;
-import boardifier.model.action.ActionList;
-import boardifier.model.action.GameAction;
-import boardifier.model.action.MoveAction;
-import boardifier.model.animation.AnimationTypes;
-import boardifier.view.GridLook;
-import javafx.geometry.Point2D;
 
 import java.util.*;
 
@@ -54,7 +46,7 @@ public class MasterStageModel extends GameStageModel {
         rowsCompleted = 0;
         pawns = new ArrayList<>();
         checkPawns = new ArrayList<>();
-        colorPawns = new HashMap<> ();
+        colorPawns = new HashMap<>();
         colorPotLists = new HashMap<Pawn.Color, List<Pawn>>();
         answer = new ArrayList<>();
         possibleAnswer = new ArrayList<>();
@@ -67,7 +59,6 @@ public class MasterStageModel extends GameStageModel {
 
     /**
      * Sets up the callbacks for the stage with the given controller.
-     *
      */
     public void setupCallbacks() {
         onSelectionChange(() -> {
@@ -84,15 +75,16 @@ public class MasterStageModel extends GameStageModel {
 
     /**
      * Callback triggered when an element is put in a grid
-     * @param element the element put in the grid
+     *
+     * @param element  the element put in the grid
      * @param gridDest the grid
-     * @param rowDest the row position of the element
-     * @param colDest the col position of the element
+     * @param rowDest  the row position of the element
+     * @param colDest  the col position of the element
      */
     public void putCallback(GameElement element, GridElement gridDest, int rowDest, int colDest) {
         if (gridDest != board && gridDest != checkBoard && gridDest != codeBoard) return;
         if (this.phase == MasterStageModel.PHASE_CODE) {
-            this.secretCombination = this.secretCombination + ((Pawn)element).getColor().name().charAt(0);
+            this.secretCombination = this.secretCombination + ((Pawn) element).getColor().name().charAt(0);
             if (secretCombination.length() == MasterSettings.NB_COLS) {
                 this.board.setVisible(true);
                 this.checkBoard.setVisible(true);
@@ -103,8 +95,8 @@ public class MasterStageModel extends GameStageModel {
             }
             return;
         }
-        if (((Pawn)element).isInCheckBoard() && gridDest == checkBoard) {
-            checkPawns.add((Pawn)element);
+        if (((Pawn) element).isInCheckBoard() && gridDest == checkBoard) {
+            checkPawns.add((Pawn) element);
             return;
         }
 
@@ -155,8 +147,8 @@ public class MasterStageModel extends GameStageModel {
         int result = 0;
         for (int i = 0; i < code.length(); i++) {
             if (code.charAt(i) == answer.charAt(i) && code.charAt(i) != 'X' && answer.charAt(i) != 'X') {
-                code.replace(i, i+1, "X");
-                answer.replace(i, i+1, "X");
+                code.replace(i, i + 1, "X");
+                answer.replace(i, i + 1, "X");
                 result++;
             }
         }
@@ -174,9 +166,9 @@ public class MasterStageModel extends GameStageModel {
         int result = 0;
         for (int i = 0; i < code.length(); i++) {
             for (int j = 0; j < answer.length(); j++) {
-                if(code.charAt(i) == answer.charAt(j) && code.charAt(i) != 'X' && answer.charAt(j) != 'X') {
+                if (code.charAt(i) == answer.charAt(j) && code.charAt(i) != 'X' && answer.charAt(j) != 'X') {
                     result++;
-                    answer.replace(j, j+1, "X");
+                    answer.replace(j, j + 1, "X");
                     break;
                 }
             }
@@ -236,7 +228,9 @@ public class MasterStageModel extends GameStageModel {
      *
      * @return The colors board.
      */
-    public ColorsBoard getColorsBoard() { return this.colors; }
+    public ColorsBoard getColorsBoard() {
+        return this.colors;
+    }
 
     /**
      * Sets the colors board.
@@ -253,7 +247,9 @@ public class MasterStageModel extends GameStageModel {
      *
      * @return The color pot.
      */
-    public MasterBoard getColorPot() { return this.colorPot; }
+    public MasterBoard getColorPot() {
+        return this.colorPot;
+    }
 
     /**
      * Sets the color pot.
@@ -270,7 +266,9 @@ public class MasterStageModel extends GameStageModel {
      *
      * @return The color pot lists.
      */
-    public Map<Pawn.Color, List<Pawn>> getColorPotLists() { return this.colorPotLists; }
+    public Map<Pawn.Color, List<Pawn>> getColorPotLists() {
+        return this.colorPotLists;
+    }
 
     /**
      * Sets the color pot lists.
@@ -289,7 +287,9 @@ public class MasterStageModel extends GameStageModel {
      *
      * @return The map of color pawns.
      */
-    public Map getColorPawns() { return this.colorPawns; }
+    public Map getColorPawns() {
+        return this.colorPawns;
+    }
 
     /**
      * Sets the map of color pawns.
@@ -299,7 +299,7 @@ public class MasterStageModel extends GameStageModel {
     public void setColorPawns(Map colorPawns) {
         this.colorPawns = colorPawns;
         colorPawns.forEach((key, value) -> {
-            addElement((Pawn)value);
+            addElement((Pawn) value);
         });
     }
 
@@ -406,14 +406,18 @@ public class MasterStageModel extends GameStageModel {
      *
      * @return The number of matching pawns.
      */
-    public int getNbMatch() { return this.nbMatch; }
+    public int getNbMatch() {
+        return this.nbMatch;
+    }
 
     /**
      * Returns the number of pawns in the secret combination that match in color but not in position with the current guess.
      *
      * @return The number of common pawns.
      */
-    public int getNbCommon() { return this.nbCommon; }
+    public int getNbCommon() {
+        return this.nbCommon;
+    }
 
     public TextElement getPlayerName() {
         return this.playerName;

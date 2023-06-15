@@ -13,7 +13,7 @@ public class CodeBoardLook extends GridLook {
     private Rectangle[] cells;
 
     public CodeBoardLook(int width, int height, GameElement element) {
-        super(width, height, (width - 20)/MasterSettings.NB_COLS, MasterSettings.CELL_SIZE * 2 - 20, 10, "0X000000", element);
+        super(width, height, (width - 20) / MasterSettings.NB_COLS, MasterSettings.CELL_SIZE * 2 - 20, 10, "0X000000", element);
         cells = new Rectangle[MasterSettings.NB_COLS];
 
         for (int i = 0; i < cells.length; i++) {

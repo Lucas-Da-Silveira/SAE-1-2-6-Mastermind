@@ -13,7 +13,7 @@ public class CheckBoardLook extends GridLook {
     private Rectangle[][] cells;
 
     public CheckBoardLook(int size, GameElement element) {
-        super((size/MasterSettings.NB_ROWS)*MasterSettings.NB_COLS, size, ((size/MasterSettings.NB_ROWS)*MasterSettings.NB_COLS-20) / MasterSettings.NB_COLS, (size-20) / MasterSettings.NB_ROWS, 10, "0X000000", element);
+        super((size / MasterSettings.NB_ROWS) * MasterSettings.NB_COLS, size, ((size / MasterSettings.NB_ROWS) * MasterSettings.NB_COLS - 20) / MasterSettings.NB_COLS, (size - 20) / MasterSettings.NB_ROWS, 10, "0X000000", element);
         cells = new Rectangle[MasterSettings.NB_ROWS][MasterSettings.NB_COLS];
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {

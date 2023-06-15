@@ -2,7 +2,6 @@ package controller;
 
 import boardifier.control.ActionPlayer;
 import boardifier.control.Controller;
-import boardifier.model.Coord2D;
 import boardifier.model.Model;
 import boardifier.model.Player;
 import boardifier.model.action.ActionList;
@@ -11,11 +10,6 @@ import boardifier.model.action.MoveAction;
 import boardifier.model.animation.AnimationTypes;
 import boardifier.view.GridLook;
 import boardifier.view.View;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import javafx.geometry.Point2D;
 import model.MasterSettings;
 import model.MasterStageModel;
@@ -34,7 +28,7 @@ public class MasterController extends Controller {
      */
     public void nextPlayer() {
         // use the default method to compute next player
-        MasterStageModel stageModel = (MasterStageModel)model.getGameStage();
+        MasterStageModel stageModel = (MasterStageModel) model.getGameStage();
         if (stageModel.getGameState() == MasterStageModel.GAME_STATE_WIN) {
             stageModel.computePartyResult(true);
             return;
@@ -44,7 +38,7 @@ public class MasterController extends Controller {
         }
         if (stageModel.getPhase() == MasterStageModel.PHASE_CODE && stageModel.getSecretCombination().length() == MasterSettings.NB_COLS) {
             model.setNextPlayer();
-           stageModel.setPhase(MasterStageModel.PHASE_GAME);
+            stageModel.setPhase(MasterStageModel.PHASE_GAME);
         }
         // get the new player
         Player p = model.getCurrentPlayer();
@@ -52,16 +46,16 @@ public class MasterController extends Controller {
         stageModel.getPlayerName().setText(p.getName());
         if (p.getType() == Player.COMPUTER) {
             System.out.println("COMPUTER PLAYS");
-            MasterDecider decider = new MasterDecider(model,this);
+            MasterDecider decider = new MasterDecider(model, this);
             ActionPlayer play = new ActionPlayer(model, this, decider, null);
             play.start();
-            try  {
+            try {
                 play.join(1000);
             } catch (InterruptedException e) {
                 System.out.println(e);
             }
         }
-        if (stageModel.getPhase() == MasterStageModel.PHASE_GAME && stageModel.getPawns().size()%MasterSettings.NB_COLS == 0 && !stageModel.getPawns().isEmpty()) {
+        if (stageModel.getPhase() == MasterStageModel.PHASE_GAME && stageModel.getPawns().size() % MasterSettings.NB_COLS == 0 && !stageModel.getPawns().isEmpty()) {
             int nbMatch = stageModel.getNbMatch();
             int nbCommon = stageModel.getNbCommon();
             int yPos;
@@ -74,7 +68,7 @@ public class MasterController extends Controller {
                 pawn.setVisible(true);
                 center = lookBoard.getRootPaneLocationForCellCenter(row, yPos);
                 stageModel.getCheckBoard().putElement(pawn, row, yPos, false);
-                pawn.setLocation(center.getX()-MasterSettings.CELL_SIZE/3, center.getY()-MasterSettings.CELL_SIZE/3);
+                pawn.setLocation(center.getX() - MasterSettings.CELL_SIZE / 3, center.getY() - MasterSettings.CELL_SIZE / 3);
                 //move = new MoveAction(model, pawn, stageModel.getCheckBoard().getName(), row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
                 //actions.addSingleAction(move);
 
@@ -84,7 +78,7 @@ public class MasterController extends Controller {
                 pawn.setVisible(true);
                 center = lookBoard.getRootPaneLocationForCellCenter(row, yPos);
                 stageModel.getCheckBoard().putElement(pawn, row, yPos, false);
-                pawn.setLocation(center.getX()-MasterSettings.CELL_SIZE/3, center.getY()-MasterSettings.CELL_SIZE/3);
+                pawn.setLocation(center.getX() - MasterSettings.CELL_SIZE / 3, center.getY() - MasterSettings.CELL_SIZE / 3);
                 //move = new MoveAction(model, pawn, stageModel.getCheckBoard().getName(), row, yPos, AnimationTypes.MOVETELEPORT_NAME, center.getX(), center.getY(), 10);
                 //actions.addSingleAction(move);
             }
@@ -94,9 +88,9 @@ public class MasterController extends Controller {
     /**
      * Creates a list of actions based on the input line and game stage information.
      *
-     * @param line       The input line representing the colors to create actions for.
-     * @param gameStage  The MasterStageModel object representing the game stage.
-     * @param model      The Model object representing the game model.
+     * @param line      The input line representing the colors to create actions for.
+     * @param gameStage The MasterStageModel object representing the game stage.
+     * @param model     The Model object representing the game model.
      * @return An ActionList object containing the created actions.
      */
     public static ActionList createActions(String line, MasterStageModel gameStage, Model model, MasterController control) {
