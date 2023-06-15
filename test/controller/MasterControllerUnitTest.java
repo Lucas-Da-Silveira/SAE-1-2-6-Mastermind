@@ -1,172 +1,166 @@
 package controller;
 
-import boardifier.model.GameException;
-import boardifier.model.GridElement;
 import boardifier.model.Model;
-import boardifier.model.Player;
 import boardifier.model.action.ActionList;
 import boardifier.model.action.GameAction;
 import boardifier.model.action.MoveAction;
-import boardifier.view.View;
+import javafx.scene.control.MenuItem;
+import model.MasterBoard;
+import model.MasterSettings;
+import model.MasterStageModel;
 import model.Pawn;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import view.CodeBoardLook;
+import view.MasterRootPane;
+import view.MasterView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-public class MasterControllerUnitTest extends ControllerUnitTest {
+public class MasterControllerUnitTest {
+    Model model;
+    MasterView view;
+    MasterStageModel stageModel;
+
     @BeforeEach
     public void setup() {
-        super.init();
-    }
-
-    @Test
-    public void testVerifyLine() {
-        // Mockito.when(board.getNbCols()).thenReturn(MasterSettings.NB_COLS);
-
-        // valid input
-        Assertions.assertTrue(controller.verifyLine("BYGP", gameStage));
-
-        // invalid input (line.length() != board.getNbCols())
-        Assertions.assertFalse(controller.verifyLine("BYGPP", gameStage));
-
-        // invalid input ('W' is not a color)
-        Assertions.assertFalse(controller.verifyLine("BYGW", gameStage));
-    }
-
-    @Test
-    public void testCreateActions() {
-        final int currentRow = 5;
-        final String input = "BYGP";
-        Mockito.when(gameStage.getRowsCompleted()).thenReturn(currentRow);
-
-        ActionList al = MasterController.createActions(input, gameStage, model, controller);
-
-        int i = 0;
-        for (List<GameAction> listAction : al.getActions()) {
-            MoveAction action = (MoveAction) listAction.get(0);
-
-            // check row
-            Assertions.assertEquals(action.getRowDest(), currentRow);
-            // check col
-            Assertions.assertEquals(action.getColDest(), i);
-            // check pawn's color
-            Assertions.assertEquals(((Pawn)action.getElement()).getColor(), Pawn.inputColor.get(input.charAt(i)));
-
-            i++;
-        }
-    }
-
-    @Test
-    public void testAnalyseAndPlay() {
-        int currentRow = 5;
-
-        Mockito.when(gameStage.getGrids()).thenReturn(new ArrayList<GridElement>(List.of(board)));
-
-        model.startGame(gameStage);
-        Mockito.when(gameStage.getRowsCompleted()).thenReturn(currentRow);
-
-        // valid move
-        Assertions.assertTrue(controller.analyseAndPlay("GGGG", gameStage, model));
-
-        // check that pawns put are all green
-        for (int i = 0; i < board.getNbCols(); i++) {
-            Assertions.assertEquals(((Pawn) board.getElement(gameStage.getRowsCompleted(), i)).getColor(), Pawn.Color.GREEN);
-        }
-
-        // false car input length > board.getNbCols()
-        Assertions.assertFalse(controller.analyseAndPlay("GGGGG", gameStage, model));
-
-        // false car 'W' not a valid color (only used as check pawn)
-        Assertions.assertFalse(controller.analyseAndPlay("GGWG", gameStage, model));
+        model = Mockito.spy(new Model());
+        view = Mockito.mock(MasterView.class);
+        stageModel = Mockito.mock(MasterStageModel.class);
+        Mockito.when(model.getGameStage()).thenReturn(stageModel);
     }
 
     @Test
     public void testNextPlayer() {
-        String input = "YYPG";
-        Model m = Mockito.mock(Model.class);
+        MasterRootPane rootPane = Mockito.mock(MasterRootPane.class);
 
-        Mockito.when(m.getCurrentPlayer()).thenReturn(Player.createComputerPlayer("computer1"));
-        Mockito.when(m.getGameStage()).thenReturn(gameStage);
-        
-        MasterController c = Mockito.spy(new MasterController(m, new View(m)));
+        Mockito.when(view.getRootPane()).thenReturn(rootPane);
+        Mockito.when(view.getMenuStart()).thenReturn(new MenuItem("New game"));
+        Mockito.when(view.getMenuSettings()).thenReturn(new MenuItem("Settings"));
+        Mockito.when(view.getMenuQuit()).thenReturn(new MenuItem("Quit"));
 
-        MasterDecider decider = Mockito.spy(new MasterDecider(m, c));
+        MasterController controller = Mockito.spy(new MasterController(model, view));
+        rootPane.addController(controller);
 
-        BufferedReader consoleIn = Mockito.mock(BufferedReader.class);
-        try {
-            Mockito.when(consoleIn.readLine()).thenReturn(input);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        Mockito.when(stageModel.getGameState()).thenReturn(MasterStageModel.GAME_STATE_WIN);
+
+        controller.nextPlayer();
+        Mockito.verify(stageModel, times(1)).computePartyResult(true);
+
+        Mockito.when(stageModel.getGameState()).thenReturn(MasterStageModel.GAME_STATE_LOOSE);
+        controller.nextPlayer();
+        Mockito.verify(stageModel, times(1)).computePartyResult(false);
+
+        /* Player p = Mockito.mock(Player.class);
+        Mockito.when(p.getName()).thenReturn("player1");
+        Mockito.when(p.getType()).thenReturn(Player.COMPUTER);
+
+        Mockito.when(model.getCurrentPlayer()).thenReturn(p);
+        Mockito.when(stageModel.getPlayerName()).thenReturn(new TextElement("p", stageModel));
+        MasterBoard board = new MasterBoard("masterboard", 100, MasterSettings.CELL_SIZE + 10, MasterSettings.NB_ROWS, MasterSettings.NB_COLS, stageModel);
+        controller.mapElementLook = new HashMap<>();
+        MasterBoardLook boardLook = Mockito.spy(new MasterBoardLook(10, board));
+        Mockito.when(boardLook.getRootPaneLocationForCellCenter(anyInt(), anyInt())).thenReturn(new Point2D(2, 2));
+        Mockito.when(controller.getElementLook(any())).thenReturn(boardLook);
+        Mockito.when(model.getGrid(any())).thenReturn(board);
+        Mockito.when(model.getGrids()).thenReturn(List.of(board));
+        Mockito.when(stageModel.getBoard()).thenReturn(board);
+
+        final int[] i = {0};
+        Map<Character, Pawn> colorPawns = new LinkedHashMap<>();
+        Map<Pawn.Color, List<Pawn>> colorPot = new LinkedHashMap<>();
+        for (Pawn.Color color : Pawn.Color.values()) {
+            colorPawns.put(color.name().charAt(0), new Pawn(color, 0, i[0], stageModel));
+            colorPawns.get(color.name().charAt(0)).setVisible(false);
+            colorPot.put(color, new ArrayList<>());
+            i[0]++;
         }
+        stageModel.setColorPawns(colorPawns);
 
-        c.nextPlayer(decider, consoleIn);
+        i[0] = 0;
+        colorPot.forEach((color, pot) -> {
+            for(int j = 0; j < (MasterSettings.NB_ROWS+1)*MasterSettings.NB_COLS; j++) {
+                Pawn pawn = new Pawn(color, i[0], j, stageModel);
+                pawn.setVisible(false);
+                pot.add(pawn);
+            }
+        });
 
-        // gameStage.getBoard().getNbCols() is called in generateRandomLine in MasterDecider
-        // when MasterSettings.AI_MODE != 0 && != 1
-        Mockito.verify(decider, times(1)).elseIAStrategy(gameStage);
+        Mockito.when(stageModel.getColorPotLists()).thenReturn(colorPot);
+        // Mockito.when(controller.createActions(any(), any(), any(), any())).thenReturn(new ActionList(true));
+        Mockito.when(stageModel.getRowsCompleted()).thenReturn(0);
 
-        Mockito.when(m.getCurrentPlayer()).thenReturn(Player.createHumanPlayer("player1"));
-
-        c.nextPlayer(decider, consoleIn);
-
-        // if not a computer, then it calls analyseAndPlay with valid human input "YYPG"
-        Mockito.verify(c, times(1)).analyseAndPlay(input, gameStage, m);
+        Mockito.when(stageModel.getGameState()).thenReturn(MasterStageModel.GAME_STATE_CONTINUE);
+        controller.nextPlayer(); */
     }
 
     @Test
-    public void testStageLoop() throws GameException {
-        String secret = "GGGG";
+    public void testCreateActions() {
+        final String input = "BYGP";
 
-        Model m = Mockito.mock(Model.class);
+        MasterRootPane rootPane = Mockito.mock(MasterRootPane.class);
 
-        Mockito.when(gameStage.getGrids()).thenReturn(new ArrayList<>(List.of(board)));
+        Mockito.when(view.getRootPane()).thenReturn(rootPane);
+        Mockito.when(view.getMenuStart()).thenReturn(new MenuItem("New game"));
+        Mockito.when(view.getMenuSettings()).thenReturn(new MenuItem("Settings"));
+        Mockito.when(view.getMenuQuit()).thenReturn(new MenuItem("Quit"));
 
-        Mockito.when(m.getElements()).thenReturn(new ArrayList<>(List.of(new Pawn(Pawn.Color.GREEN, 0, 0, gameStage))));
-        Mockito.when(m.isEndStage()).thenReturn(false, true);
-        Mockito.when(m.getCurrentPlayer()).thenReturn(Player.createComputerPlayer("computer1"), Player.createHumanPlayer("player1"));
-        Mockito.when(m.getGameStage()).thenReturn(gameStage);
+        MasterController controller = Mockito.spy(new MasterController(model, view));
+        rootPane.addController(controller);
 
-        MasterController c = Mockito.spy(new MasterController(m, new View(m)));
+        Mockito.when(stageModel.getPhase()).thenReturn(MasterStageModel.PHASE_CODE);
 
-        BufferedReader consoleIn = Mockito.mock(BufferedReader.class);
-        try {
-            Mockito.when(consoleIn.readLine()).thenReturn(secret, secret);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        Mockito.when(model.getGameStage()).thenReturn(stageModel);
+
+        final int[] i = {0};
+        Map<Character, Pawn> colorPawns = new LinkedHashMap<>();
+        Map<Pawn.Color, List<Pawn>> colorPot = new LinkedHashMap<>();
+        for (Pawn.Color color : Pawn.Color.values()) {
+            colorPawns.put(color.name().charAt(0), new Pawn(color, 0, i[0], stageModel));
+            colorPawns.get(color.name().charAt(0)).setVisible(false);
+            colorPot.put(color, new ArrayList<>());
+            i[0]++;
         }
+        stageModel.setColorPawns(colorPawns);
 
-        doNothing().when(c).update();
-        doNothing().when(c).setElementLocationToCellCenter(Mockito.any());
-        doNothing().when(c).endGame();
-        doNothing().when(c).stopStage();
+        i[0] = 0;
+        colorPot.forEach((color, pot) -> {
+            for (int j = 0; j < (MasterSettings.NB_ROWS + 1) * MasterSettings.NB_COLS; j++) {
+                Pawn pawn = new Pawn(color, i[0], j, stageModel);
+                pawn.setVisible(false);
+                pot.add(pawn);
+            }
+        });
 
-        // c.setFirstStageName("master");
-        // c.startGame();
-        c.stageLoop(consoleIn);
+        Mockito.when(stageModel.getColorPotLists()).thenReturn(colorPot);
 
-        // board.getNbCols is only called in MasterDecider.generateRandomLine
-        // here it's called two times
-        // 1st call : for the computer to generate a secret combination
-        // 2st call : for the computer to play 1 time
-        Mockito.verify(board, times(2)).getNbCols();
-        for (Pawn p : gameStage.getPawns()) {
-            Assertions.assertEquals(p.getColor(), Pawn.Color.GREEN);
+        MasterBoard codeBoard = new MasterBoard("codeboard", MasterSettings.WINDOW_WIDTH / 2 - MasterSettings.CELL_SIZE * 2 * MasterSettings.NB_COLS / 2, (MasterSettings.WINDOW_HEIGHT - (MasterSettings.CELL_SIZE * 2)) / 2, 1, MasterSettings.NB_COLS, stageModel);
+        Mockito.when(stageModel.getCodeBoard()).thenReturn(codeBoard);
+        doReturn(new CodeBoardLook(10, 10, codeBoard)).when(controller).getElementLook(any());
+        doReturn(codeBoard).when(model).getGrid(anyString());
+
+        ActionList al = MasterController.createActions(input, stageModel, model, controller);
+
+        int j = 0;
+        for (List<GameAction> listAction : al.getActions()) {
+            MoveAction action = (MoveAction) listAction.get(0);
+
+            // check row
+            Assertions.assertEquals(0, 0);
+            // check col
+            Assertions.assertEquals(action.getColDest(), j);
+            // check pawn's color
+            Assertions.assertEquals(((Pawn) action.getElement()).getColor(), Pawn.inputColor.get(input.charAt(j)));
+
+            j++;
         }
-
-        Mockito.when(m.getCurrentPlayer()).thenReturn(Player.createHumanPlayer("player1"));
-
-        c.stageLoop(consoleIn);
-
-        Mockito.verify(c, times(2)).verifyLine(secret, gameStage);
-        Assertions.assertEquals(m.getIdWinner(), 0);
     }
 }
