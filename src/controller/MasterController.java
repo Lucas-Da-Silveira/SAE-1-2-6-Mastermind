@@ -28,6 +28,10 @@ public class MasterController extends Controller {
         setControlAction(new MasterControllerAction(model, view, this));
     }
 
+    /**
+     * Sets the next player after the first phase, and for the phase after compute for each turn the pawns to be put
+     * in the CheckBoard and if the player is an AI, gets its inputs and create actions from it and play them
+     */
     public void nextPlayer() {
         // use the default method to compute next player
         MasterStageModel stageModel = (MasterStageModel)model.getGameStage();

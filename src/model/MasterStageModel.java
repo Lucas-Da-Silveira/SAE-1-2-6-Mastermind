@@ -425,14 +425,29 @@ public class MasterStageModel extends GameStageModel {
         return new MasterStageFactory(this);
     }
 
+    /**
+     * Returns the current phase of the game
+     *
+     * @return The current phase of the game
+     */
     public int getPhase() {
         return this.phase;
     }
 
+    /**
+     * Sets the current phase of the game with the param phase
+     *
+     * @param phase The new phase of the game
+     */
     public void setPhase(int phase) {
         this.phase = phase;
     }
 
+    /**
+     * Returns the current state of the game
+     *
+     * @return The current state of the game
+     */
     public int getGameState() {
         return this.gameState;
     }
