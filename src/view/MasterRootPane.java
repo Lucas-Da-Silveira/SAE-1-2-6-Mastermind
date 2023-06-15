@@ -74,6 +74,7 @@ public class MasterRootPane extends RootPane {
         AIComboBox.getSelectionModel().select(MasterSettings.AI_MODE);
         fields.add(new Label("AI choice:"), 0, 4);
         fields.add(AIComboBox, 1, 4);
+        if (modeComboBox.getSelectionModel().getSelectedIndex() != 2) AIComboBox.setVisible(false);
 
         btn = new Button("Validate");
         btn.setPrefWidth(80);

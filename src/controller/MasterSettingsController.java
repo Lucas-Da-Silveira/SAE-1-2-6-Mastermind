@@ -53,11 +53,7 @@ public class MasterSettingsController {
         rootPane.getModeComboBox().setOnAction(event -> {
             if (event.getSource() != rootPane.getModeComboBox()) return;
             // if mode selected is doesn't involve the AI, then don't show the AI choice field
-            if (rootPane.getModeComboBox().getSelectionModel().getSelectedIndex() != 2) {
-                rootPane.getAIComboBox().setVisible(false);
-            } else {
-                rootPane.getAIComboBox().setVisible(true);
-            }
+            rootPane.getAIComboBox().setVisible(rootPane.getModeComboBox().getSelectionModel().getSelectedIndex() == 2);
         });
     }
 }
