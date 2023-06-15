@@ -125,22 +125,4 @@ public class MasterController extends Controller {
 
         return actions;
     }
-
-    /**
-     * Verifies if the input line is valid.
-     *
-     * @param line       The input line to analyze.
-     * @param gameStage  The MasterStageModel object representing the game stage.
-     * @return True if the line is valid, False otherwise.
-     */
-    public boolean verifyLine(String line, MasterStageModel gameStage) {
-        if (line.length() != gameStage.getBoard().getNbCols()) return false;
-
-        for (int i = 0; i < line.length(); i++) {
-            char l = line.charAt(i);
-            if (Pawn.inputColor.get(l) == null) return false;
-        }
-
-        return true;
-    }
 }
