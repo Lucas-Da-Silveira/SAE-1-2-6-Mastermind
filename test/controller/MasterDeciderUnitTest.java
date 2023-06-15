@@ -1,5 +1,7 @@
 package controller;
 
+import boardifier.model.Model;
+import model.MasterStageModel;
 import model.Pawn;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,13 +10,54 @@ import org.mockito.Mockito;
 
 import java.util.*;
 
-public class MasterDeciderUnitTest extends ControllerUnitTest {
+import static org.mockito.Mockito.when;
+
+public class MasterDeciderUnitTest {
     protected MasterDecider decider;
+
+    Model model;
+    MasterStageModel stageModel;
+    MasterController controller;
 
     @BeforeEach
     public void setup() {
-        super.init();
+        model = Mockito.spy(new Model());
+        stageModel = Mockito.spy(new MasterStageModel("model.MasterStageModel", model));
+        when(model.getGameStage()).thenReturn(stageModel);
+        controller = Mockito.mock(MasterController.class);
         decider = Mockito.spy(new MasterDecider(model, controller));
+    }
+
+    @Test
+    public void testFirstIAStrategy() {
+        List<String> possibleInput = new ArrayList<>();
+        possibleInput.add("YYBG");
+        possibleInput.add("PGYB");
+
+        when(stageModel.getRowsCompleted()).thenReturn(1);
+        when(stageModel.getNbMatch()).thenReturn(1);
+        when(stageModel.getNbCommon()).thenReturn(2);
+
+        String result = decider.firstIAStrategy(stageModel);
+
+        Assertions.assertEquals("BBBB", result);
+    }
+
+    @Test
+    public void testSecondIAStrategy() {
+        List<String> possibleInput = new ArrayList<>();
+        possibleInput.add("ABC");
+        possibleInput.add("DEF");
+
+        when(stageModel.getRowsCompleted()).thenReturn(1);
+        when(stageModel.getNbMatch()).thenReturn(1);
+        when(stageModel.getNbCommon()).thenReturn(2);
+
+        stageModel.possibleAnswer = Arrays.asList("YBBB", "PPGB");
+
+        String result = decider.secondIAStrategy(stageModel);
+
+        Assertions.assertTrue(result.equals("PPGB") || result.equals("YBBB"));
     }
 
     @Test
@@ -27,22 +70,22 @@ public class MasterDeciderUnitTest extends ControllerUnitTest {
 
     @Test
     public void testNumberCorrectColor() {
-        Mockito.when(gameStage.getAnswer()).thenReturn(new ArrayList<>(Arrays.asList('C', 'C', null, null, 'C')));
-        Assertions.assertEquals(decider.numberCorrectColor(gameStage), 3);
+        when(stageModel.getAnswer()).thenReturn(new ArrayList<>(Arrays.asList('C', 'C', null, null, 'C')));
+        Assertions.assertEquals(decider.numberCorrectColor(stageModel), 3);
 
-        Mockito.when(gameStage.getAnswer()).thenReturn(new ArrayList<>());
-        Assertions.assertEquals(decider.numberCorrectColor(gameStage), 0);
+        when(stageModel.getAnswer()).thenReturn(new ArrayList<>());
+        Assertions.assertEquals(decider.numberCorrectColor(stageModel), 0);
 
-        Mockito.when(gameStage.getAnswer()).thenReturn(new ArrayList<>(Arrays.asList('C', 'C', 'C')));
-        Assertions.assertEquals(decider.numberCorrectColor(gameStage), 3);
+        when(stageModel.getAnswer()).thenReturn(new ArrayList<>(Arrays.asList('C', 'C', 'C')));
+        Assertions.assertEquals(decider.numberCorrectColor(stageModel), 3);
 
-        Mockito.when(gameStage.getAnswer()).thenReturn(new ArrayList<>(Arrays.asList(null, null, null)));
-        Assertions.assertEquals(decider.numberCorrectColor(gameStage), 0);
+        when(stageModel.getAnswer()).thenReturn(new ArrayList<>(Arrays.asList(null, null, null)));
+        Assertions.assertEquals(decider.numberCorrectColor(stageModel), 0);
     }
 
     @Test
     public void testGetPossibleInputChar() {
-        Map<Character, Pawn.Color>  inputColor = new LinkedHashMap<>();
+        Map<Character, Pawn.Color> inputColor = new LinkedHashMap<>();
         inputColor.put('Y', Pawn.Color.YELLOW);
 
         Assertions.assertEquals(decider.getPossibleInputChar(inputColor), new ArrayList<>(List.of('Y')));
@@ -51,5 +94,9 @@ public class MasterDeciderUnitTest extends ControllerUnitTest {
         inputColor.put('B', Pawn.Color.BLUE);
 
         Assertions.assertEquals(decider.getPossibleInputChar(inputColor), new ArrayList<>(List.of('Y', 'G', 'B')));
+    }
+
+    private static int factorial(int n) {
+        return (n == 1 || n == 0) ? 1 : n * factorial(n - 1);
     }
 }

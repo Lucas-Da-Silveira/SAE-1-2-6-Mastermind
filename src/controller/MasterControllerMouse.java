@@ -23,6 +23,7 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
         super(model, view, control);
     }
 
+    @Override
     public void handle(MouseEvent event) {
         if (!model.isCaptureMouseEvent()) return;
         // get the clic x,y in the whole scene (this includes the menu bar if it exists)
@@ -31,15 +32,6 @@ public class MasterControllerMouse extends ControllerMouse implements EventHandl
         List<GameElement> list = control.elementsAt(clic);
 
         System.out.println("click in "+event.getSceneX()+","+event.getSceneY());
-        /*
-        for(GameElement element : list) {
-            System.out.println(element);
-            if(element instanceof Pawn) {
-                System.out.println(((Pawn)element).getColor().name());
-                System.out.println(model.getGameStage().getState());
-            }
-        }
-        */
 
         MasterStageModel stageModel = (MasterStageModel) model.getGameStage();
         if (stageModel.getState() == MasterStageModel.STATE_SELECTPAWN) {

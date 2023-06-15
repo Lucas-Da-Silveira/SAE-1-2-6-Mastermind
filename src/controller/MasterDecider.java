@@ -90,7 +90,7 @@ public class MasterDecider extends Decider {
      * @param gameStage The MasterStageModel object representing the game stage.
      * @return The generated line of colors based on the strategy.
      */
-    private String firstIAStrategy(MasterStageModel gameStage) {
+    public String firstIAStrategy(MasterStageModel gameStage) {
         String result;
 
         if(gameStage.getRowsCompleted() != 0 && numberCorrectColor(gameStage) < MasterSettings.NB_COLS && gameStage.getNbMatch() + gameStage.getNbCommon() > 0) {
@@ -120,7 +120,7 @@ public class MasterDecider extends Decider {
      * @param gameStage The MasterStageModel object representing the game stage.
      * @return The generated line of colors based on the strategy.
      */
-    private String secondIAStrategy(MasterStageModel gameStage) {
+    public String secondIAStrategy(MasterStageModel gameStage) {
         String result;
         SecureRandom rand = new SecureRandom();
         StringBuilder temp = new StringBuilder();
