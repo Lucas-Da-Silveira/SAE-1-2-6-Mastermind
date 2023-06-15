@@ -79,49 +79,58 @@ public class MasterStageModel extends GameStageModel {
             board.setValidCells(getRowsCompleted());
         });
 
-        onPutInGrid((element, gridDest, rowDest, colDest) -> {
-            if (gridDest != board && gridDest != checkBoard && gridDest != codeBoard) return;
-            if (this.phase == MasterStageModel.PHASE_CODE) {
-                this.secretCombination = this.secretCombination + ((Pawn)element).getColor().name().charAt(0);
-                if (secretCombination.length() == MasterSettings.NB_COLS) {
-                    this.board.setVisible(true);
-                    this.checkBoard.setVisible(true);
-                    this.codeBoard.setVisible(false);
-                    Arrays.stream(Pawn.Color.values()).forEach(c -> {
-                        this.colorPotLists.get(c).stream().filter(GameElement::isVisible).forEach(p -> p.setVisible(false));
-                    });
-                }
-                return;
+        onPutInGrid(this::putCallback);
+    }
+
+    /**
+     * Callback triggered when an element is put in a grid
+     * @param element the element put in the grid
+     * @param gridDest the grid
+     * @param rowDest the row position of the element
+     * @param colDest the col position of the element
+     */
+    public void putCallback(GameElement element, GridElement gridDest, int rowDest, int colDest) {
+        if (gridDest != board && gridDest != checkBoard && gridDest != codeBoard) return;
+        if (this.phase == MasterStageModel.PHASE_CODE) {
+            this.secretCombination = this.secretCombination + ((Pawn)element).getColor().name().charAt(0);
+            if (secretCombination.length() == MasterSettings.NB_COLS) {
+                this.board.setVisible(true);
+                this.checkBoard.setVisible(true);
+                this.codeBoard.setVisible(false);
+                Arrays.stream(Pawn.Color.values()).forEach(c -> {
+                    this.colorPotLists.get(c).stream().filter(GameElement::isVisible).forEach(p -> p.setVisible(false));
+                });
             }
-            if (((Pawn)element).isInCheckBoard() && gridDest == checkBoard) {
-                checkPawns.add((Pawn)element);
-                return;
+            return;
+        }
+        if (((Pawn)element).isInCheckBoard() && gridDest == checkBoard) {
+            checkPawns.add((Pawn)element);
+            return;
+        }
+
+        if (pawns.size() % board.getNbCols() == 0 && !pawns.isEmpty()) {
+
+            int yPos = 0;
+            int row = getRowsCompleted();
+            StringBuilder secretCombinationTmp = new StringBuilder(getSecretCombination());
+            StringBuilder pawnsTmp = new StringBuilder();
+
+            for (Pawn pawn : pawns) {
+                pawnsTmp.append(pawn.getColor().name().charAt(0));
             }
+            pawnsTmp = new StringBuilder(pawnsTmp.substring(MasterSettings.NB_COLS * row, MasterSettings.NB_COLS * (row + 1)));
+            nbMatch = numberCorrectPawns(secretCombinationTmp, pawnsTmp);
+            nbCommon = numberCommonPawns(secretCombinationTmp, pawnsTmp);
+            this.incrementRowsCompleted();
 
-            if (pawns.size() % board.getNbCols() == 0 && !pawns.isEmpty()) {
-
-                int yPos = 0;
-                int row = getRowsCompleted();
-                StringBuilder secretCombinationTmp = new StringBuilder(getSecretCombination());
-                StringBuilder pawnsTmp = new StringBuilder();
-
-                for (Pawn pawn : pawns) {
-                    pawnsTmp.append(pawn.getColor().name().charAt(0));
-                }
-                pawnsTmp = new StringBuilder(pawnsTmp.substring(MasterSettings.NB_COLS * row, MasterSettings.NB_COLS * (row + 1)));
-                nbMatch = numberCorrectPawns(secretCombinationTmp, pawnsTmp);
-                nbCommon = numberCommonPawns(secretCombinationTmp, pawnsTmp);
-                this.incrementRowsCompleted();
-
-                if (nbMatch == board.getNbCols()) {
-                    // win
-                    this.gameState = GAME_STATE_WIN;
-                } else if (rowsCompleted >= board.getNbRows() && nbMatch != board.getNbCols()) {
-                    // loose
-                    this.gameState = GAME_STATE_LOOSE;
-                }
+            if (nbMatch == board.getNbCols()) {
+                // win
+                this.gameState = GAME_STATE_WIN;
+            } else if (rowsCompleted >= board.getNbRows() && nbMatch != board.getNbCols()) {
+                // loose
+                this.gameState = GAME_STATE_LOOSE;
             }
-        });
+        }
     }
 
     /**
