@@ -1,6 +1,5 @@
 package view;
 
-import boardifier.control.Controller;
 import boardifier.model.Model;
 import boardifier.view.RootPane;
 import controller.MasterController;
@@ -114,6 +113,10 @@ public class MasterRootPane extends RootPane {
         return btn;
     }
 
+    /**
+     * Add the controller inside this object, in order to call start a new game directly when validate button is clicked
+     * @param _controller the controller
+     */
     public void addController(MasterController _controller) {
         controller = _controller;
     }
